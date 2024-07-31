@@ -1,0 +1,18 @@
+.slick-dots li button:before {
+    font-size: 0;
+    content: none;
+  }
+  
+  .slick-dots li {
+    width: auto;
+    margin: 0 5px;
+  }
+  
+  .slick-dots li.slick-active div {
+    background-color: #3b3bb4; /* Color para el punto activo */
+  }
+  
+  .slick-dots li div {
+    background-color: #c4c4c4; /* Color para los puntos inactivos */
+  }
+  
