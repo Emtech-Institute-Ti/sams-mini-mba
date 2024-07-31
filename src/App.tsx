@@ -1,11 +1,8 @@
 import React from 'react';
+import AppRoutes from './routes/routes';
 
 const App: React.FC = () => {
-  return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-600">¡Hello World!</h1>
-    </div>
-  );
+  return <AppRoutes />;
 };
 
 export default App;
