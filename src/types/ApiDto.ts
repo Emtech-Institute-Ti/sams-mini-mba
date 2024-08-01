@@ -31,3 +31,8 @@ export interface Course {
   course_updated_at: string;
   course_deleted_at: string | null;
 }
+
+export interface LoginStudentPayload {
+  email: string;
+  password: string;
+}

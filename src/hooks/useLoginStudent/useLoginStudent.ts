@@ -1,21 +1,10 @@
-// src/hooks/useLoginStudent.ts
 import { useState } from 'react';
+import axios from 'axios';
 import apiRequest from '../../api/apiRequest';
-
-
-interface LoginStudentPayload {
-  email: string;
-  password: string;
-}
-
-interface ApiResponse<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
+import { ApiResponse, LoginStudentPayload } from '../../types/ApiDto';
 
 const useLoginStudent = (): [
-  (loginData: LoginStudentPayload) => Promise<ApiResponse<null>>,
+  (loginData: LoginStudentPayload) => Promise<void>,
   ApiResponse<null>,
 ] => {
   const [response, setResponse] = useState<ApiResponse<null>>({
@@ -26,8 +15,9 @@ const useLoginStudent = (): [
 
   const loginStudent = async (
     loginData: LoginStudentPayload
-  ): Promise<ApiResponse<null>> => {
+  ): Promise<void> => {
     setResponse({ data: null, loading: true, error: null });
+
     try {
       const result = await apiRequest<null>(
         'POST',
@@ -35,11 +25,20 @@ const useLoginStudent = (): [
         loginData
       );
       setResponse({ data: result.data, loading: false, error: null });
-      return { data: result.data, loading: false, error: null };
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'API request error';
-      setResponse({ data: null, loading: false, error: errorMessage });
-      return { data: null, loading: false, error: errorMessage };
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setResponse({
+          data: null,
+          loading: false,
+          error: error.response?.data?.message || 'API request error',
+        });
+      } else {
+        setResponse({
+          data: null,
+          loading: false,
+          error: 'An unknown error occurred',
+        });
+      }
     }
   };
 
