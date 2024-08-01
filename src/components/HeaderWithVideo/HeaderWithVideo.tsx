@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
 import {
   playbutton,
   videobackground,
@@ -21,13 +23,24 @@ const HeaderWithVideo: React.FC = () => {
     setShowVideo(false);
   };
 
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
   return (
     <section
       className="relative bg-cover bg-center py-12"
       style={{ backgroundImage: `url(${maskback})` }}
+      ref={ref}
     >
       <div className="relative container mx-auto px-4">
-        <div className="text-center mb-8 pt-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 1 }}
+          className="text-center mb-8 pt-12"
+        >
           <h1 className="text-4xl font-bold text-secondaryPurple mb-4">
             ¿Estás listo para tu transformación empresarial?
           </h1>
@@ -38,9 +51,19 @@ const HeaderWithVideo: React.FC = () => {
             oportunidad de crecimiento y cada problema en un trampolín hacia el
             éxito.
           </p>
-        </div>
-        <div className="flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-8 md:mb-0 relative">
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="flex flex-col md:flex-row items-center"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 1, delay: 0.4 }}
+            className="md:w-1/2 mb-8 md:mb-0 relative"
+          >
             <div
               className="relative w-full h-auto rounded-lg shadow-lg cursor-pointer"
               onClick={handlePlayClick}
@@ -54,8 +77,13 @@ const HeaderWithVideo: React.FC = () => {
                 <img src={playbutton} alt="Play Button" className="h-28 w-28" />
               </div>
             </div>
-          </div>
-          <div className="md:w-1/2 relative md:ml-8 md:pl-8">
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 1, delay: 0.6 }}
+            className="md:w-1/2 relative md:ml-8 md:pl-8"
+          >
             <h2 className="text-2xl font-bold text-customBlue mb-8">
               Smart MBA está aquí{' '}
               <span className="text-customBlue font-normal">
@@ -78,8 +106,8 @@ const HeaderWithVideo: React.FC = () => {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
       {showVideo && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">

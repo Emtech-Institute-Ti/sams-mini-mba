@@ -40,6 +40,7 @@ import menubar from '../assets/images/menu.png';
 import line from '../assets/images/line.png';
 import coursegrowth from '../assets/images/course-growth.png';
 import coursemaster from '../assets/images/course-master.png';
+import bannermob from '../assets/images/banner-mob.png';
 
 export {
   banner,
@@ -84,4 +85,5 @@ export {
   line,
   coursegrowth,
   coursemaster,
+  bannermob,
 };
