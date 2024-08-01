@@ -1,17 +1,7 @@
-// src/hooks/useGetCourses.ts
 import { useState, useEffect } from 'react';
 import apiRequest from '../../api/apiRequest';
-
-interface Course {
-  course_id: number;
-  course_name: string;
-  course_monthly_payment: string;
-  course_full_payment: string;
-  course_next_opening_dates: string[] | null;
-  course_created_at: string;
-  course_updated_at: string;
-  course_deleted_at: string | null;
-}
+import { Course } from '../../types/ApiDto';
+import axios from 'axios';
 
 interface ApiResponse<T> {
   data: T | null;
@@ -31,8 +21,20 @@ const useGetCourses = (): ApiResponse<Course[]> => {
       try {
         const result = await apiRequest<Course[]>('GET', '/api/courses');
         setResponse({ data: result.data, loading: false, error: null });
-      } catch (error: any) {
-        setResponse({ data: null, loading: false, error: error.message });
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          setResponse({
+            data: null,
+            loading: false,
+            error: error.response?.data?.message || 'API request error',
+          });
+        } else {
+          setResponse({
+            data: null,
+            loading: false,
+            error: 'An unknown error occurred',
+          });
+        }
       }
     };
 
