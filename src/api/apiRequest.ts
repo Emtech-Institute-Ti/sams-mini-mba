@@ -1,26 +1,30 @@
-// src/apiRequest.ts
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import createApiInstance from './config';
+
+const api = createApiInstance();
 
 const apiRequest = async <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
-  data?: any,
+  data?: unknown,
   config?: AxiosRequestConfig
 ): Promise<AxiosResponse<T>> => {
   try {
-    const response = await axios({
+    const response = await api.request<T>({
       method,
       url,
       data,
       headers: {
-        'x-api-key': 'FwNk7R}W%Sxzm9h$$D!&$eg_<L&"4*VU',
         ...config?.headers,
       },
       ...config,
     });
     return response;
-  } catch (error: any) {
-    throw new Error(error.response?.data?.message || 'API request error');
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || 'API request error');
+    }
+    throw new Error('An unknown error occurred');
   }
 };
 
