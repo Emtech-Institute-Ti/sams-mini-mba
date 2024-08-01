@@ -1,32 +1,14 @@
 import { useState } from 'react';
+import axios from 'axios';
 import apiRequest from '../../api/apiRequest';
-
-interface GenerateBarcodePayload {
-  // Define the payload structure if any
-}
-
-interface Barcode {
-  monthly: string;
-  fully: string;
-}
-
-interface BarcodeResponse {
-  success: boolean;
-  course: string;
-  barcodes: Barcode;
-}
-
-interface ApiResponse<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
+import {
+  ApiResponse,
+  BarcodeResponse,
+  GenerateBarcodePayload,
+} from '../../types/ApiDto';
 
 const useGenerateBarcode = (): [
-  (
-    payload: GenerateBarcodePayload,
-    type: 1 | 2
-  ) => Promise<ApiResponse<BarcodeResponse>>,
+  (payload: GenerateBarcodePayload) => Promise<void>,
   ApiResponse<BarcodeResponse>,
 ] => {
   const [response, setResponse] = useState<ApiResponse<BarcodeResponse>>({
@@ -36,22 +18,31 @@ const useGenerateBarcode = (): [
   });
 
   const generateBarcode = async (
-    payload: GenerateBarcodePayload,
-    type: 1 | 2
-  ): Promise<ApiResponse<BarcodeResponse>> => {
+    payload: GenerateBarcodePayload
+  ): Promise<void> => {
     setResponse({ data: null, loading: true, error: null });
+
     try {
       const result = await apiRequest<BarcodeResponse>(
         'POST',
-        `/api/payments/cash-payment/generate/barcode/${type}`,
+        `/api/payments/cash-payment/generate/barcode`,
         payload
       );
       setResponse({ data: result.data, loading: false, error: null });
-      return { data: result.data, loading: false, error: null };
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'API request error';
-      setResponse({ data: null, loading: false, error: errorMessage });
-      return { data: null, loading: false, error: errorMessage };
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setResponse({
+          data: null,
+          loading: false,
+          error: error.response?.data?.message || 'API request error',
+        });
+      } else {
+        setResponse({
+          data: null,
+          loading: false,
+          error: 'An unknown error occurred',
+        });
+      }
     }
   };
 

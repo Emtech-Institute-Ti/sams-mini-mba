@@ -36,3 +36,18 @@ export interface LoginStudentPayload {
   email: string;
   password: string;
 }
+
+export interface GenerateBarcodePayload {
+  id: number;
+}
+
+export interface Barcode {
+  monthly: string;
+  fully: string;
+}
+
+export interface BarcodeResponse {
+  success: boolean;
+  course: string;
+  barcodes: Barcode;
+}
