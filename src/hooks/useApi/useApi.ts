@@ -1,36 +1,32 @@
-// src/hooks/useApi.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import apiRequest from '../../api/apiRequest';
-
-interface ApiResponse<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
+import { ApiResponse, HttpMethod, ApiError } from '../../types/ApiDto';
 
 const useApi = <T>(
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  method: HttpMethod,
   endpoint: string,
-  body?: any
-) => {
+  body?: unknown
+): ApiResponse<T> => {
   const [response, setResponse] = useState<ApiResponse<T>>({
     data: null,
     loading: true,
     error: null,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await apiRequest<T>(method, endpoint, body);
-        setResponse({ data: result.data, loading: false, error: null });
-      } catch (error: any) {
-        setResponse({ data: null, loading: false, error: error.message });
-      }
-    };
-
-    fetchData();
+  const fetchData = useCallback(async () => {
+    setResponse({ data: null, loading: true, error: null });
+    try {
+      const result = await apiRequest<T>(method, endpoint, body);
+      setResponse({ data: result.data, loading: false, error: null });
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      setResponse({ data: null, loading: false, error: apiError.message });
+    }
   }, [method, endpoint, body]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return response;
 };
