@@ -1,21 +1,10 @@
 import { useState } from 'react';
 import apiRequest from '../../api/apiRequest';
-
-interface RegisterStudentPayload {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  email: string;
-  password: string;
-  sector_company: string;
-  rol_company: string;
-}
-
-interface ApiResponse<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
+import {
+  ApiResponse,
+  ApiError,
+  RegisterStudentPayload,
+} from '../../types/ApiDto';
 
 const useCreateStudent = (): [
   (studentData: RegisterStudentPayload) => Promise<void>,
@@ -32,8 +21,9 @@ const useCreateStudent = (): [
     try {
       await apiRequest<null>('POST', '/api/students/register', studentData);
       setResponse({ data: null, loading: false, error: null });
-    } catch (error: any) {
-      setResponse({ data: null, loading: false, error: error.message });
+    } catch (error: unknown) {
+      const apiError = error as ApiError;
+      setResponse({ data: null, loading: false, error: apiError.message });
     }
   };
 
