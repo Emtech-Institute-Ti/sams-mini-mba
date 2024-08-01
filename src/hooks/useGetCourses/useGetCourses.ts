@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react';
 import apiRequest from '../../api/apiRequest';
-import { Course } from '../../types/ApiDto';
+import { ApiResponse, Course } from '../../types/ApiDto';
 import axios from 'axios';
-
-interface ApiResponse<T> {
-  data: T | null;
-  loading: boolean;
-  error: string | null;
-}
 
 const useGetCourses = (): ApiResponse<Course[]> => {
   const [response, setResponse] = useState<ApiResponse<Course[]>>({
