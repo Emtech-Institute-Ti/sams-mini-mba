@@ -6,9 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://mini-mba-sams-backend.stdst.site:4434',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api'), // Mantenemos '/api' en el path
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
     },
   },
