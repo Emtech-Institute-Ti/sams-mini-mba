@@ -8,7 +8,7 @@ import useGetCourses from '../../hooks/useGetCourses/useGetCourses';
 const RegistrationForm: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const location = useLocation();
-  const { data: courses, loading, error } = useGetCourses();
+  const { data: courses } = useGetCourses();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,8 +20,7 @@ const RegistrationForm: React.FC = () => {
     courseOfInterest: '',
   });
 
-  const [registerStudent, { data, loading: regLoading, error: regError }] =
-    useCreateStudent();
+  const [registerStudent] = useCreateStudent();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

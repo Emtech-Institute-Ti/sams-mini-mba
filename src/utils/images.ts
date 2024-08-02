@@ -41,6 +41,7 @@ import line from '../assets/images/line.png';
 import coursegrowth from '../assets/images/course-growth.png';
 import coursemaster from '../assets/images/course-master.png';
 import bannermob from '../assets/images/banner-mob.png';
+import bannercourse from '../assets/images/banner-course.png';
 
 export {
   banner,
@@ -86,4 +87,5 @@ export {
   coursegrowth,
   coursemaster,
   bannermob,
+  bannercourse,
 };

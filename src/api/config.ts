@@ -12,7 +12,7 @@ const createApiInstance = (): AxiosInstance => {
     baseURL,
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': apiKey,
+      'x-api-key': 'FwNk7R}W%Sxzm9h$$D!&$eg_<L&"4*VU',
     },
   });
 };

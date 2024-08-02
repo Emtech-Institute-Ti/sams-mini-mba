@@ -1,30 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { cashpayment, growthlogo } from '../../utils/images';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { cashpayment, growthlogo, masterlogo } from '../../utils/images';
 import { useNavigate } from 'react-router-dom';
 import useGenerateBarcode from '../../hooks/useGenerateBardcode/useGenerateBardcode';
-
 
 const PaymentDetails: React.FC = () => {
   const navigate = useNavigate();
   const [generateBarcode, barcodeResponse] = useGenerateBarcode();
-  const [hasFetched, setHasFetched] = useState(false);
-  const [paymentType, setPaymentType] = useState<1 | 2>(1); // Default to 1
+  const [paymentType, setPaymentType] = useState<1 | 2>(1);
+  const [courseId, setCourseId] = useState<number>(1);
+  const [barcodeCache, setBarcodeCache] = useState<{
+    [key: number]: { [key: number]: string };
+  }>({});
 
   const handlePaymentTypeChange = (type: 1 | 2) => {
     setPaymentType(type);
   };
 
-  useEffect(() => {
-    const fetchBarcode = async () => {
-      const payload = {}; // Define el payload si es necesario
-      await generateBarcode(payload, paymentType);
-      setHasFetched(true);
-    };
+  const handleCourseChange = (id: number) => {
+    setCourseId(id);
+  };
 
-    if (!hasFetched) {
-      fetchBarcode();
+  const fetchBarcode = useCallback(async () => {
+    if (!barcodeCache[courseId] || !barcodeCache[courseId][paymentType]) {
+      await generateBarcode(courseId);
     }
-  }, [generateBarcode, hasFetched, paymentType]);
+  }, [barcodeCache, courseId, paymentType, generateBarcode]);
+
+  useEffect(() => {
+    if (barcodeResponse.data && !barcodeCache[courseId]?.[paymentType]) {
+      setBarcodeCache((prevCache) => ({
+        ...prevCache,
+        [courseId]: {
+          ...prevCache[courseId],
+          [paymentType]:
+            barcodeResponse.data!.barcodes[
+              paymentType === 1 ? 'monthly' : 'fully'
+            ],
+        },
+      }));
+    }
+  }, [barcodeResponse, courseId, paymentType]);
+
+  useEffect(() => {
+    fetchBarcode();
+  }, [fetchBarcode]);
+
+  const barcode = useMemo(
+    () =>
+      barcodeCache[courseId]?.[paymentType]
+        ? `data:image/png;base64,${barcodeCache[courseId][paymentType]}`
+        : null,
+    [barcodeCache, courseId, paymentType]
+  );
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
@@ -43,8 +70,12 @@ const PaymentDetails: React.FC = () => {
           <div className="w-1/2 pr-8 border-r border-secondaryPurple">
             <p className="text-sm font-semibold mb-4">Número de folio</p>
             <img
-              src={growthlogo}
-              alt="Growth Accelerator Logo"
+              src={courseId === 1 ? growthlogo : masterlogo}
+              alt={
+                courseId === 1
+                  ? 'Growth Accelerator Logo'
+                  : 'Master Management Logo'
+              }
               className="h-auto w-auto mb-6"
             />
             <p className="text-sm text-gray-500 bg-gray-50 p-4 rounded-lg">
@@ -59,9 +90,9 @@ const PaymentDetails: React.FC = () => {
               <br />
               Supporting line text lorem ipsum dolor sit amet, consectetur.
             </p>
-            {barcodeResponse.data ? (
+            {barcode ? (
               <img
-                src={`data:image/png;base64,${barcodeResponse.data.barcodes[paymentType === 1 ? 'monthly' : 'fully']}`}
+                src={barcode}
                 alt="Barcode"
                 className="h-auto w-auto mx-auto"
               />
@@ -90,6 +121,20 @@ const PaymentDetails: React.FC = () => {
             onClick={() => handlePaymentTypeChange(2)}
           >
             Pago Permanente
+          </button>
+        </div>
+        <div className="mt-4">
+          <button
+            className={`px-4 py-2 rounded-full ${courseId === 1 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
+            onClick={() => handleCourseChange(1)}
+          >
+            Growth Accelerator
+          </button>
+          <button
+            className={`ml-2 px-4 py-2 rounded-full ${courseId === 2 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
+            onClick={() => handleCourseChange(2)}
+          >
+            Master Management
           </button>
         </div>
       </div>

@@ -29,9 +29,12 @@ const HeaderWithVideo: React.FC = () => {
   });
 
   return (
-    <section
-      className="relative bg-cover bg-center py-12"
-      style={{ backgroundImage: `url(${maskback})` }}
+    <div
+      className="relative bg-cover bg-center py-12 md:ml-12 rounded-l-lg md:rounded-l-2xl lg:rounded-l-3xl"
+      style={{
+        backgroundImage: `url(${maskback})`,
+        backgroundPosition: 'center top',
+      }}
       ref={ref}
     >
       <div className="relative container mx-auto px-4">
@@ -41,10 +44,10 @@ const HeaderWithVideo: React.FC = () => {
           transition={{ duration: 1 }}
           className="text-center mb-8 pt-12"
         >
-          <h1 className="text-4xl font-bold text-secondaryPurple mb-4">
+          <h1 className="text-4xl font-bold text-secondaryPurple mb-16">
             ¿Estás listo para tu transformación empresarial?
           </h1>
-          <p className="text-lg text-gray-700 mb-8">
+          <p className="text-lg text-gray-700 mb-16">
             Imagina tener a tu disposición todas las herramientas y
             conocimientos necesarios para superar cualquier desafío empresarial.
             Visualiza un entorno en el que cada obstáculo se convierte en una
@@ -65,7 +68,7 @@ const HeaderWithVideo: React.FC = () => {
             className="md:w-1/2 mb-8 md:mb-0 relative"
           >
             <div
-              className="relative w-full h-auto rounded-lg shadow-lg cursor-pointer"
+              className="relative w-full h-auto rounded-lg shadow-lg cursor-pointer md:-ml-16"
               onClick={handlePlayClick}
             >
               <img
@@ -93,7 +96,7 @@ const HeaderWithVideo: React.FC = () => {
             <p className="text-lg text-customBlack mb-24">
               Diseñado para acompañarte en el crecimiento de tu empresa:
             </p>
-            <div className="bg-white shadow-md rounded-xl p-6 flex items-center space-x-4">
+            <div className="bg-white shadow-md rounded-xl p-6 flex items-center space-x-4 md:-ml-40 w-full max-w-xl mx-auto">
               <img src={checkcircle} alt="Check Circle" className="h-8 w-8" />
               <div>
                 <h3 className="text-lg font-bold text-secondaryPurple mb-2">
@@ -106,6 +109,8 @@ const HeaderWithVideo: React.FC = () => {
                 </p>
               </div>
             </div>
+
+            <hr className="hidden md:block my-8 border-t-4 border-secondaryPurple w-full md:w-3/4 lg:w-1/6 mx-auto md:ml-0" />
           </motion.div>
         </motion.div>
       </div>
@@ -128,7 +133,7 @@ const HeaderWithVideo: React.FC = () => {
           </div>
         </div>
       )}
-    </section>
+    </div>
   );
 };
 

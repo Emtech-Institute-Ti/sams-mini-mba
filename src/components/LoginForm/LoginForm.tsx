@@ -18,8 +18,8 @@ const LoginForm: React.FC = () => {
 
   const handleLoginClick = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await loginStudent(formData);
-    if (!response.error) {
+    await loginStudent(formData);
+    if (!error) {
       navigate('/campusdashboard');
     }
   };

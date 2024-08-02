@@ -9,10 +9,10 @@
   }
   
   .slick-dots li.slick-active div {
-    background-color: #3b3bb4; /* Color para el punto activo */
+    background-color: #3b3bb4;
   }
   
   .slick-dots li div {
-    background-color: #c4c4c4; /* Color para los puntos inactivos */
+    background-color: #c4c4c4;
   }
   

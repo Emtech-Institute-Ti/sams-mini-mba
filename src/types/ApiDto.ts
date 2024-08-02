@@ -32,6 +32,10 @@ export interface Course {
   course_deleted_at: string | null;
 }
 
+export interface CourseResponse {
+  course: Course;
+}
+
 export interface LoginStudentPayload {
   email: string;
   password: string;

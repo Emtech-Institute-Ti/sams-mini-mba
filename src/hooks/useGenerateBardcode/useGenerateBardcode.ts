@@ -1,14 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
 import apiRequest from '../../api/apiRequest';
-import {
-  ApiResponse,
-  BarcodeResponse,
-  GenerateBarcodePayload,
-} from '../../types/ApiDto';
+import { ApiResponse, BarcodeResponse } from '../../types/ApiDto';
 
 const useGenerateBarcode = (): [
-  (payload: GenerateBarcodePayload) => Promise<void>,
+  (id: number) => Promise<void>,
   ApiResponse<BarcodeResponse>,
 ] => {
   const [response, setResponse] = useState<ApiResponse<BarcodeResponse>>({
@@ -17,16 +13,13 @@ const useGenerateBarcode = (): [
     error: null,
   });
 
-  const generateBarcode = async (
-    payload: GenerateBarcodePayload
-  ): Promise<void> => {
+  const generateBarcode = async (id: number): Promise<void> => {
     setResponse({ data: null, loading: true, error: null });
 
     try {
       const result = await apiRequest<BarcodeResponse>(
-        'POST',
-        `/api/payments/cash-payment/generate/barcode`,
-        payload
+        'GET',
+        `/api/payments/barcode/${id}`
       );
       setResponse({ data: result.data, loading: false, error: null });
     } catch (error: unknown) {

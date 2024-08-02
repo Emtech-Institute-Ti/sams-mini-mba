@@ -1,39 +1,76 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { growthlogo, masterlogo, benefitimg } from '../../utils/images';
-import useGetCourses from '../../hooks/useGetCourses/useGetCourses';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import {
+  growthlogo,
+  masterlogo,
+  benefitimg,
+  bannercourse,
+} from '../../utils/images';
+import useGetCoursesById from '../../hooks/useGetCoursesById/useGetCoursesById';
+import { Course } from '../../types/ApiDto';
 
 const ProgramsSection: React.FC = () => {
   const navigate = useNavigate();
-  const { data: courses, loading, error } = useGetCourses();
+
+  const growthCourseResponse = useGetCoursesById(1);
+  const masterCourseResponse = useGetCoursesById(2);
 
   const handleRegisterClick = () => {
     navigate('/register');
   };
 
-  const handleGrowthCourseClick = () => {
-    navigate('/growthcourse');
+  const handleGrowthCourseClick = (course: Course) => {
+    navigate('/growthcourse', { state: { course } });
   };
 
-  const handleMasterCourseClick = () => {
-    navigate('/mastercourse');
+  const handleMasterCourseClick = (course: Course) => {
+    navigate('/mastercourse', { state: { course } });
   };
 
-  if (loading) {
-    return <p>Cargando...</p>;
-  }
+  const growthCourse = growthCourseResponse.data;
+  const masterCourse = masterCourseResponse.data;
 
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+  const { ref: titleRef, inView: titleInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
 
-  const growthCourse = courses?.find((course) => course.course_id === 1);
-  const masterCourse = courses?.find((course) => course.course_id === 2);
+  const { ref: growthRef, inView: growthInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const { ref: masterRef, inView: masterInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const { ref: footerRef, inView: footerInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
 
   return (
-    <section className="bg-white py-12">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="bg-cover py-32"
+      style={{
+        backgroundImage: `url(${bannercourse})`,
+        backgroundPosition: 'center bottom',
+      }}
+    >
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <motion.div
+          ref={titleRef}
+          initial={{ opacity: 0, y: 20 }}
+          animate={titleInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 1 }}
+          className="text-center mb-12"
+        >
           <h2 className="text-3xl font-bold text-customBlue mb-8">
             ¿Qué te ofrecemos?
           </h2>
@@ -45,14 +82,22 @@ const ProgramsSection: React.FC = () => {
               a necesidades diferentes según el rol que cumples en tu empresa:
             </p>
           </div>
-        </div>
-        <div className="flex flex-col md:flex-row justify-center items-stretch space-y-4 md:space-y-0 md:space-x-4">
-          <div className="bg-white shadow-lg rounded-lg p-6 text-center w-full md:w-1/2 flex flex-col justify-between h-auto min-h-[300px] flex-grow">
+        </motion.div>
+        <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-44 py-12">
+          <motion.div
+            ref={growthRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={
+              growthInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+            }
+            transition={{ duration: 1 }}
+            className="bg-white shadow-2xl rounded-3xl p-6 text-center w-full md:w-1/3 flex flex-col justify-between h-auto min-h-[300px] max-w-sm"
+          >
             <div className="flex-grow">
               <img
                 src={growthlogo}
                 alt="Growth Accelerator Logo"
-                className="mx-auto mb-auto"
+                className="mx-auto mb-6"
               />
               {growthCourse ? (
                 <p className="text-customBlack mb-6">
@@ -79,21 +124,33 @@ const ProgramsSection: React.FC = () => {
               )}
             </div>
             <div>
-              <button
-                onClick={handleGrowthCourseClick}
-                className="inline-block bg-secondaryPurple text-white px-6 py-2 hover:bg-customBlue-dark transition duration-300 mt-4"
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() =>
+                  growthCourse && handleGrowthCourseClick(growthCourse)
+                }
+                className="inline-block bg-secondaryPurple text-white px-12 py-3 rounded-3xl hover:bg-customBlue transition duration-300 mt-4"
                 style={{ width: 'auto' }}
               >
-                Ver más
-              </button>
+                Ver más <span className="ml-2">&rsaquo;</span>
+              </motion.button>
             </div>
-          </div>
-          <div className="bg-white shadow-lg rounded-lg p-6 text-center w-full md:w-1/2 flex flex-col justify-between h-auto min-h-[300px] flex-grow">
+          </motion.div>
+          <motion.div
+            ref={masterRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={
+              masterInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+            }
+            transition={{ duration: 1 }}
+            className="bg-white shadow-2xl rounded-3xl p-6 text-center w-full md:w-1/3 flex flex-col justify-between h-auto min-h-[300px] max-w-sm"
+          >
             <div className="flex-grow">
               <img
                 src={masterlogo}
                 alt="Master Management Logo"
-                className="mx-auto mb-10 p-6"
+                className="mx-auto mb-10 p-8"
               />
               {masterCourse ? (
                 <p className="text-gray-700 mb-4">
@@ -116,18 +173,28 @@ const ProgramsSection: React.FC = () => {
               )}
             </div>
             <div>
-              <button
-                onClick={handleMasterCourseClick}
-                className="inline-block bg-secondaryPurple text-white px-6 py-2 hover:bg-customBlue-dark transition duration-300 mt-4"
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() =>
+                  masterCourse && handleMasterCourseClick(masterCourse)
+                }
+                className="inline-block bg-secondaryPurple text-white px-12 py-3 rounded-3xl hover:bg-customBlue transition duration-300 mt-4"
                 style={{ width: 'auto' }}
               >
-                Ver más
-              </button>
+                Ver más <span className="ml-2">&rsaquo;</span>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-center items-center mt-12 bg-white shadow-lg rounded-lg overflow-hidden">
+        <motion.div
+          ref={footerRef}
+          initial={{ opacity: 0, y: 20 }}
+          animate={footerInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 1 }}
+          className="flex flex-col md:flex-row justify-center items-center mt-12 bg-white shadow-lg rounded-lg overflow-hidden"
+        >
           <img
             src={benefitimg}
             alt="Imagen ilustrativa"
@@ -145,18 +212,20 @@ const ProgramsSection: React.FC = () => {
               </span>
             </p>
             <div className="flex justify-center md:justify-start">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleRegisterClick}
                 className="inline-block bg-secondaryPurple text-white px-6 py-2 rounded-full hover:bg-secondaryPurple-dark transition duration-300 mt-4"
                 style={{ width: 'auto' }}
               >
                 Inscríbete aquí
-              </button>
+              </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </motion.div>
   );
 };
 

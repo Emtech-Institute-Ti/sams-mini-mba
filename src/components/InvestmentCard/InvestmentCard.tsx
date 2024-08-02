@@ -1,21 +1,13 @@
 import React from 'react';
 import { maskpng } from '../../utils/images';
 import { formatPrice } from '../../utils/formatPrice';
-import useGetCourses from '../../hooks/useGetCourses/useGetCourses';
+import { Course } from '../../types/ApiDto';
 
-const InvestmentCard: React.FC = () => {
-  const { data: courses, loading, error } = useGetCourses();
+interface InvestmentCardProps {
+  course: Course;
+}
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  const course = courses ? courses[0] : null;
-
+const InvestmentCard: React.FC<InvestmentCardProps> = ({ course }) => {
   return (
     <div
       className="flex flex-col items-center bg-gray-100 rounded-lg shadow-lg p-8 md:p-16 lg:p-32 xl:p-52 relative"
@@ -33,12 +25,12 @@ const InvestmentCard: React.FC = () => {
           6 Pagos mensuales de:
         </p>
         <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondaryPurple mb-2">
-          ${course ? formatPrice(course.course_monthly_payment) : ''}
+          ${formatPrice(course.course_monthly_payment)}
         </p>
         <p className="text-lg md:text-xl lg:text-2xl text-customBlue mb-6">
           o un pago único de{' '}
           <span className="font-bold text-customBlue">
-            ${course ? formatPrice(course.course_full_payment) : ''}
+            ${formatPrice(course.course_full_payment)}
           </span>
         </p>
         <button className="mt-6 px-4 md:px-6 lg:px-8 py-2 md:py-3 bg-gradient-to-r from-secondaryPurple to-thirdBlue text-white text-sm md:text-lg lg:text-xl rounded-full shadow-lg hover:from-blue-800 hover:to-blue-600">
