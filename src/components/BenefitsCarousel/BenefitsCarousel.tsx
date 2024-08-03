@@ -16,7 +16,7 @@ const BenefitsCarousel: React.FC = () => {
     autoplay: true,
     autoplaySpeed: 5000,
     customPaging: () => (
-      <div className="w-2.5 h-2.5 bg-gray-300 rounded-full mx-1"></div>
+      <div className="w-2 h-2 bg-gray-300 rounded-full mx-1"></div>
     ),
     appendDots: (dots: string) => (
       <div className="bg-secondaryPurple">
@@ -45,12 +45,12 @@ const BenefitsCarousel: React.FC = () => {
 
   return (
     <div className="py-24 bg-gray-100">
-      <div className="text-center mb-12 pb-32">
+      <div className="text-center mb-8 pb-16">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl font-bold text-customBlue mb-4"
+          className="text-4xl font-bold text-customBlue mb-8 max-w-xs mx-auto"
         >
           ¿Por qué elegir Smart MBA?
         </motion.h2>
@@ -65,7 +65,8 @@ const BenefitsCarousel: React.FC = () => {
           siguiente nivel
         </motion.p>
       </div>
-      <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12 pb-32">
+
+      <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-12">
         <Slider {...settings}>
           {benefits.map((benefit, index) => (
             <motion.div
@@ -75,17 +76,19 @@ const BenefitsCarousel: React.FC = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="px-4 mb-8"
             >
-              <div className="flex flex-col justify-start items-start bg-white shadow-md rounded-lg p-6 h-72">
+              <div className="flex items-center bg-white shadow-md rounded-lg p-6 min-h-[200px] max-h-[200px]">
                 <img
                   src={benefit.icon}
                   alt={benefit.title}
-                  className="h-12 w-12 mb-4"
+                  className="h-12 w-12 mr-8 self-center"
                 />
-                <div className="text-left">
-                  <h3 className="text-lg font-bold mb-2 text-customBlue">
-                    {benefit.title}:
+                <div className="text-start">
+                  <h3 className="text-sm font-bold mb-2 text-secondaryPurple">
+                    {benefit.title}:{' '}
+                    <span className="text-customBlack font-normal">
+                      {benefit.text}
+                    </span>
                   </h3>
-                  <p className="text-sm text-gray-700">{benefit.text}</p>
                 </div>
               </div>
             </motion.div>

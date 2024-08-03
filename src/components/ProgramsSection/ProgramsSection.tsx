@@ -207,10 +207,11 @@ const ProgramsSection: React.FC = () => {
               liderazgo, nuestros programas están enfocados en que logres ese
               éxito empresarial que estás buscando.
               <br />
-              <span className="font-bold">
+              <span className="font-bold mt-8 block">
                 ¡Únete a la transformación para el éxito empresarial!
               </span>
             </p>
+
             <div className="flex justify-center md:justify-start">
               <motion.button
                 whileHover={{ scale: 1.05 }}
