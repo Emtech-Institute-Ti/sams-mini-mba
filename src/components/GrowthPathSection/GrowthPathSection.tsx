@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { line } from '../../utils/images';
 import { modules } from '../../utils/modules';
 
@@ -64,9 +65,23 @@ const GrowthPathSection: React.FC = () => {
                   >
                     <div className="text-secondaryPurple font-bold cursor-pointer">{`Módulo ${index + 1}`}</div>
                   </div>
-                  <div
-                    className={`${expandedModule === index ? 'block' : 'hidden'} md:block`}
-                  >
+                  <AnimatePresence>
+                    {expandedModule === index && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="md:hidden"
+                      >
+                        <h3 className="text-xl font-bold text-gray-900 py-2">
+                          {item.title}:
+                        </h3>
+                        <p className="text-gray-700">{item.desc}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  <div className="hidden md:block">
                     <h3 className="text-xl font-bold text-gray-900 py-2">
                       {item.title}:
                     </h3>
@@ -76,13 +91,15 @@ const GrowthPathSection: React.FC = () => {
               ))}
             </ul>
             <div className="mt-8 text-center">
-              <a
+              <motion.a
                 href="/example.pdf"
                 download="example.pdf"
                 className="inline-block bg-secondaryPurple text-white px-6 py-3 rounded-full hover:bg-customBlue-dark transition duration-300"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
                 Descargar brochure
-              </a>
+              </motion.a>
             </div>
           </div>
         </div>
