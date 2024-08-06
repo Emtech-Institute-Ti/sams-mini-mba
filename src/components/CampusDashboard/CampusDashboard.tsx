@@ -46,11 +46,12 @@ const CampusDashboard: React.FC = () => {
           >
             Pagar
           </NavLink>
-          <div className="flex justify-center mt-8 w-full">
-            <button className="block text-center bg-secondaryPurple text-white py-2 px-4 rounded-full hover:bg-secondaryPurple-dark transition duration-300 w-full lg:w-auto">
+          <NavLink
+            to="/campusdashboard/moodle"
+            className="block text-center bg-secondaryPurple text-white py-2 px-4 rounded-full hover:bg-secondaryPurple-dark transition duration-300 w-full lg:w-auto"
+          >
               Ir a mi curso
-            </button>
-          </div>
+          </NavLink>
         </nav>
       </aside>
 
