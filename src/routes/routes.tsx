@@ -13,6 +13,7 @@ import DashboardAccount from '../components/DashboardAccount/DashboardAccount';
 import DashboardPaymentHistory from '../components/DashboardPaymentHistory/DashboardPaymentHistory';
 import DashboardPayment from '../components/DashboardPayment/DashboardPayment';
 import RedirectToMoodle from '../components/MoodleRedirect/MoodleRedirect';
+
 const AppRoutes: React.FC = () => {
   return (
     <Router>

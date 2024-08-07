@@ -42,6 +42,7 @@ import coursegrowth from '../assets/images/course-growth.png';
 import coursemaster from '../assets/images/course-master.png';
 import bannermob from '../assets/images/banner-mob.png';
 import bannercourse from '../assets/images/banner-course.png';
+import bgcourses from '../assets/images/bg-courses.png';
 
 export {
   banner,
@@ -88,4 +89,5 @@ export {
   coursemaster,
   bannermob,
   bannercourse,
+  bgcourses,
 };
