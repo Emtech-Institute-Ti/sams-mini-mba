@@ -2,6 +2,7 @@
   "name": "sams-mini-mba",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://www.test.smartmba.stdst.site",
   "type": "module",
   "scripts": {
     "dev": "vite",
