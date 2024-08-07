@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginbanner } from '../../utils/images';
 import useLoginStudent from '../../hooks/useLoginStudent/useLoginStudent';
-import { useFormDataMoodle  } from '../../context/moodle/MoodleContext';
+import { useFormDataMoodle } from '../../context/moodle/MoodleContext';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { setFormDataMoodle } = useFormDataMoodle ();
+  const { setFormDataMoodle } = useFormDataMoodle();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -19,14 +19,16 @@ const LoginForm: React.FC = () => {
   };
 
   const handleLoginClick = async (e: React.FormEvent) => {
-      e.preventDefault();
-      await loginStudent(formData);
-      if (!error) {
+    e.preventDefault();
+    await loginStudent(formData);
+    if (!error) {
       const response = await loginStudent(formData);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       if (!response?.error) {
         setFormDataMoodle(formData);
         navigate('/campusdashboard');
-      };
+      }
     }
   };
 

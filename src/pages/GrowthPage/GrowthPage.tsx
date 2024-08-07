@@ -7,7 +7,7 @@ import HeroSection from '../../components/HeroSection/HeroSection';
 import GrowthInfoSection from '../../components/GrowhtInfo/GrowthInfo';
 import GrowthOwnerSection from '../../components/GrowthOwnerSection/GrowthOwnerSection';
 import GrowthPathSection from '../../components/GrowthPathSection/GrowthPathSection';
-import InvestmentCard from '../../components/InvestmentCard/InvestmentCard';
+// import InvestmentCard from '../../components/InvestmentCard/InvestmentCard';
 
 const GrowthCoursePage: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const GrowthCoursePage: React.FC = () => {
       <GrowthInfoSection />
       <GrowthOwnerSection />
       <GrowthPathSection />
-      <InvestmentCard />
+      {/* <InvestmentCard  /> */}
       <Footer />
       <WhatsappSupport />
     </div>
