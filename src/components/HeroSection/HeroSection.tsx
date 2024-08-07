@@ -1,30 +1,28 @@
 import React from 'react';
 
 interface HeroSectionProps {
-  backgroundImage: string;
-  playButton: string;
+  desktopBackgroundImage: string;
+  mobileBackgroundImage: string;
+  altText: string;
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({
-  backgroundImage,
-  playButton,
+  desktopBackgroundImage,
+  mobileBackgroundImage,
+  altText,
 }) => {
   return (
     <div className="relative">
       <img
-        src={backgroundImage}
-        alt="Main"
-        className="w-full h-auto object-cover"
+        src={desktopBackgroundImage}
+        alt={altText}
+        className="hidden md:block w-full h-auto object-cover"
       />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex items-center">
-          <img
-            src={playButton}
-            alt="Play Button"
-            className="h-16 w-16 md:h-20 md:w-20"
-          />
-        </div>
-      </div>
+      <img
+        src={mobileBackgroundImage}
+        alt={altText}
+        className="block md:hidden w-full h-auto object-cover"
+      />
     </div>
   );
 };
