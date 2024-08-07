@@ -169,3 +169,8 @@ export interface StudentPaymentsResponse {
   success: boolean;
   payments: Payment[];
 }
+
+export interface FormDataMoodle {
+  email: string;
+  password: string;
+}

@@ -16,7 +16,6 @@ import RedirectToMoodle from '../components/MoodleRedirect/MoodleRedirect';
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
 import RecoverPasswordPage from '../pages/RecoverPasswordPage/RecoverPasswordPage';
 
-
 const AppRoutes: React.FC = () => {
   return (
     <Router>
