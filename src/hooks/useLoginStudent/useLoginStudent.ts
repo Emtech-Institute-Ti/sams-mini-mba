@@ -4,7 +4,7 @@ import apiRequest from '../../api/apiRequest';
 import { ApiResponse, LoginStudentPayload } from '../../types/ApiDto';
 
 const useLoginStudent = (): [
-  (loginData: LoginStudentPayload) => Promise<void>,
+  (loginData: LoginStudentPayload) => Promise<ApiResponse<null>>,
   ApiResponse<null>,
 ] => {
   const [response, setResponse] = useState<ApiResponse<null>>({
@@ -15,7 +15,7 @@ const useLoginStudent = (): [
 
   const loginStudent = async (
     loginData: LoginStudentPayload
-  ): Promise<void> => {
+  ): Promise<ApiResponse<null>> => {
     setResponse({ data: null, loading: true, error: null });
 
     try {
@@ -24,21 +24,16 @@ const useLoginStudent = (): [
         '/api/students/login',
         loginData
       );
-      setResponse({ data: result.data, loading: false, error: null });
+      const apiResponse = { data: result.data, loading: false, error: null };
+      setResponse(apiResponse);
+      return apiResponse;
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setResponse({
-          data: null,
-          loading: false,
-          error: error.response?.data?.message || 'API request error',
-        });
-      } else {
-        setResponse({
-          data: null,
-          loading: false,
-          error: 'An unknown error occurred',
-        });
-      }
+      const errorMessage = axios.isAxiosError(error)
+        ? error.response?.data?.message || 'API request error'
+        : 'Error al intentar iniciar sesión.';
+      const apiResponse = { data: null, loading: false, error: errorMessage };
+      setResponse(apiResponse);
+      return apiResponse;
     }
   };
 
