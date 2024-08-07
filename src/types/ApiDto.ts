@@ -55,3 +55,26 @@ export interface BarcodeResponse {
   course: string;
   barcodes: Barcode;
 }
+
+export interface VerifyTokenPayload {
+  email: string;
+  token: string;
+}
+
+export interface VerifyTokenResponse {
+  message: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  token: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+}
+
+export interface RecoverPasswordResponse {
+  message: string;
+}

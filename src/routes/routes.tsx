@@ -13,6 +13,7 @@ import DashboardAccount from '../components/DashboardAccount/DashboardAccount';
 import DashboardPaymentHistory from '../components/DashboardPaymentHistory/DashboardPaymentHistory';
 import DashboardPayment from '../components/DashboardPayment/DashboardPayment';
 import RedirectToMoodle from '../components/MoodleRedirect/MoodleRedirect';
+import RecoverPasswordPage from '../pages/RecoverPasswordPage/RecoverPasswordPage';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/recover-password" element={<RecoverPasswordPage />} />
         <Route path="/register" element={<RegistrationFormPage />} />
         <Route path="/growthcourse" element={<GrowthCoursePage />} />
         <Route path="/mastercourse" element={<MasterCoursePage />} />
