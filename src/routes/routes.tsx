@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LandingPage from '../pages/LandingPage/LandingPage';
 import LoginPage from '../pages/LoginPage/LoginPage';
 import RegistrationFormPage from '../pages/RegistrationFormPage/RegistrationFormPage';
-import GrowthCoursePage from '../pages/GrowthPage/GrowthPage';
-import MasterCoursePage from '../pages/MasterPage/MasterPage';
+import GrowthCoursePage from '../pages/GrowthCoursePage/GrowthCoursePage';
+import MasterCoursePage from '../pages/MasterCoursePage/MasterCoursePage';
 import PaymentCashPage from '../pages/PaymentCashPage/PaymentCashPage';
 import FolioFormPage from '../pages/FolioFormPage/FolioFormPage';
 import CampusDashboardPage from '../pages/CampusDashboardPage/CampusDashboardPage';
@@ -14,6 +14,8 @@ import DashboardPaymentHistory from '../components/DashboardPaymentHistory/Dashb
 import DashboardPayment from '../components/DashboardPayment/DashboardPayment';
 import RedirectToMoodle from '../components/MoodleRedirect/MoodleRedirect';
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
+import RecoverPasswordPage from '../pages/RecoverPasswordPage/RecoverPasswordPage';
+
 
 const AppRoutes: React.FC = () => {
   return (
@@ -21,6 +23,7 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/recover-password" element={<RecoverPasswordPage />} />
         <Route path="/register" element={<RegistrationFormPage />} />
         <Route path="/growthcourse" element={<GrowthCoursePage />} />
         <Route path="/mastercourse" element={<MasterCoursePage />} />

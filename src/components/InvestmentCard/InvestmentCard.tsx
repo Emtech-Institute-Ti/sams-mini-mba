@@ -21,10 +21,10 @@ const InvestmentCard: React.FC<InvestmentCardProps> = ({ course }) => {
         Inversión del programa
       </h2>
       <div className="bg-white rounded-lg p-6 md:p-8 lg:p-12 text-center shadow-lg mt-20 w-full max-w-xs sm:max-w-md md:max-w-2xl lg:max-w-4xl h-auto flex flex-col justify-center items-center">
-        <p className="text-lg md:text-xl lg:text-2xl text-customBlue mb-4">
+        <p className="text-lg md:text-xl lg:text-2xl text-customBlue mb-4 font-semibold">
           6 Pagos mensuales de:
         </p>
-        <p className="text-3xl md:text-4xl lg:text-5xl font-bold text-secondaryPurple mb-2">
+        <p className="text-5xl md:text-4xl lg:text-5xl font-bold text-secondaryPurple mb-2">
           ${formatPrice(course.course_monthly_payment)}
         </p>
         <p className="text-lg md:text-xl lg:text-2xl text-customBlue mb-6">

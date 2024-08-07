@@ -7,6 +7,7 @@ import {
   checkcircle,
   maskback,
 } from '../../utils/images';
+import { landingVideo } from '../../utils/videos';
 
 const HeaderWithVideo: React.FC = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -125,7 +126,7 @@ const HeaderWithVideo: React.FC = () => {
             </button>
             <video
               className="w-full h-auto"
-              src="src/assets/videos/test.mp4"
+              src={landingVideo}
               autoPlay
               controls
               onEnded={handleVideoEnded}

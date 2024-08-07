@@ -48,7 +48,7 @@ const Banner: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
             onClick={() => navigate('/register')}
-            className="mt-6 bg-secondaryPurple text-white px-6 py-4 sm:px-8 sm:py-4 rounded-full hover:bg-secondaryPurple transition duration-300 font-medium text-lg sm:text-xl"
+            className="bg-secondaryPurple text-white px-9 py-4 sm:px-8 sm:py-3 rounded-full hover:bg-secondaryPurple transition duration-300 font-medium text-lg sm:text-xl"
           >
             Inscríbete aquí
           </motion.button>

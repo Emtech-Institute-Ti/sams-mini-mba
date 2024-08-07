@@ -33,6 +33,10 @@ const LoginForm: React.FC = () => {
     }
   };
 
+  const handleForgotPasswordClick = () => {
+    navigate('/recover-password');
+  };
+
   return (
     <div className="flex h-screen bg-gray-100 items-center justify-center">
       <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
@@ -93,7 +97,11 @@ const LoginForm: React.FC = () => {
             </button>
           </form>
           <div className="text-center mt-6">
-            <a href="#" className="text-customBlack underline">
+            <a
+              href="#"
+              className="text-customBlack underline"
+              onClick={handleForgotPasswordClick}
+            >
               ¿Olvidaste tu contraseña?
             </a>
           </div>

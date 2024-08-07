@@ -20,6 +20,8 @@ module.exports = {
         customGray: '#D9D9D9',
         thirdBlue: '#0068A2',
         primaryGray: '#D1D1D1',
+        secondaryWhite: '#EBECFF',
+        thirdWhite: '#F8F8F8',
       },
     },
   },
