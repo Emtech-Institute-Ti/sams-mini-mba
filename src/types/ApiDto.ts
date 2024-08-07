@@ -42,6 +42,11 @@ export interface LoginStudentPayload {
   password: string;
 }
 
+export interface LoginResponse {
+  success: boolean;
+  token: string;
+}
+
 export interface GenerateBarcodePayload {
   id: number;
 }

@@ -11,7 +11,7 @@ const LoginForm: React.FC = () => {
     email: '',
     password: '',
   });
-  const [loginStudent, { loading, error }] = useLoginStudent();
+  const [loginStudent, { loading }] = useLoginStudent();
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +52,9 @@ const LoginForm: React.FC = () => {
             Iniciar sesión
           </h2>
           <form className="space-y-10" onSubmit={handleLoginClick}>
-            {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+            {errorMessage && (
+              <p className="text-red-500 text-center">{errorMessage}</p>
+            )}
             <div>
               <label
                 className="block text-secondaryPurple font-bold mb-2"

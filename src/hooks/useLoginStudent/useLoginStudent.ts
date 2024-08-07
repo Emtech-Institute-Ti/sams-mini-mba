@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import axios from 'axios';
 import apiRequest from '../../api/apiRequest';
-import { ApiResponse, LoginStudentPayload } from '../../types/ApiDto';
+import {
+  ApiResponse,
+  LoginStudentPayload,
+  LoginResponse,
+} from '../../types/ApiDto';
 
 const useLoginStudent = (): [
-  (loginData: LoginStudentPayload) => Promise<ApiResponse<null>>,
-  ApiResponse<null>,
+  (loginData: LoginStudentPayload) => Promise<ApiResponse<LoginResponse>>,
+  ApiResponse<LoginResponse>,
 ] => {
-  const [response, setResponse] = useState<ApiResponse<null>>({
+  const [response, setResponse] = useState<ApiResponse<LoginResponse>>({
     data: null,
     loading: false,
     error: null,
@@ -15,11 +19,11 @@ const useLoginStudent = (): [
 
   const loginStudent = async (
     loginData: LoginStudentPayload
-  ): Promise<ApiResponse<null>> => {
+  ): Promise<ApiResponse<LoginResponse>> => {
     setResponse({ data: null, loading: true, error: null });
 
     try {
-      const result = await apiRequest<null>(
+      const result = await apiRequest<LoginResponse>(
         'POST',
         '/api/students/login',
         loginData
