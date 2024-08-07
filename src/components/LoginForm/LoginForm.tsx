@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginbanner } from '../../utils/images';
 import useLoginStudent from '../../hooks/useLoginStudent/useLoginStudent';
-import { useFormDataMoodle  } from '../../context/moodle/MoodleContext';
+import { useFormDataMoodle } from '../../context/moodle/MoodleContext';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-  const { setFormDataMoodle } = useFormDataMoodle ();
+  const { setFormDataMoodle } = useFormDataMoodle();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [loginStudent, { loading, error }] = useLoginStudent();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -19,14 +20,16 @@ const LoginForm: React.FC = () => {
   };
 
   const handleLoginClick = async (e: React.FormEvent) => {
-      e.preventDefault();
-      await loginStudent(formData);
-      if (!error) {
-      const response = await loginStudent(formData);
-      if (!response?.error) {
-        setFormDataMoodle(formData);
-        navigate('/campusdashboard');
-      };
+    e.preventDefault();
+    setErrorMessage('');
+
+    const response = await loginStudent(formData);
+    if (response.data && response.data.success) {
+      localStorage.setItem('wsToken', response.data.token);
+      setFormDataMoodle(formData);
+      navigate('/campusdashboard');
+    } else if (response.error) {
+      setErrorMessage(response.error);
     }
   };
 
@@ -45,6 +48,7 @@ const LoginForm: React.FC = () => {
             Iniciar sesión
           </h2>
           <form className="space-y-10" onSubmit={handleLoginClick}>
+            {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
             <div>
               <label
                 className="block text-secondaryPurple font-bold mb-2"
@@ -88,7 +92,6 @@ const LoginForm: React.FC = () => {
               {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </form>
-          {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
           <div className="text-center mt-6">
             <a href="#" className="text-customBlack underline">
               ¿Olvidaste tu contraseña?

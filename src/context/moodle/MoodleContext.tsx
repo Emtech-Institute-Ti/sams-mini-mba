@@ -1,14 +1,31 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import CryptoJS from 'crypto-js';
 
 interface FormDataMoodleContextProps {
   formDataMoodle: any;
-  setFormDataMoodle: React.Dispatch<React.SetStateAction<any>>;
+  setFormDataMoodle: (data: any) => void;
 }
 
 const FormDataMoodleContext = createContext<FormDataMoodleContextProps | undefined>(undefined);
 
+const SECRET_KEY = 'hwuFvg7NuMgS7TV';
+
 export const FormDataMoodleProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [formDataMoodle, setFormDataMoodle] = useState<any>(null);
+  const [formDataMoodle, setFormDataMoodleState] = useState<any>(() => {
+    const encryptedData = localStorage.getItem('formDataMoodle');
+    if (encryptedData) {
+      const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
+      const decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+      return JSON.parse(decryptedData);
+    }
+    return null;
+  });
+
+  const setFormDataMoodle = (data: any) => {
+    const encryptedData = CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+    localStorage.setItem('formDataMoodle', encryptedData);
+    setFormDataMoodleState(data);
+  };
 
   return (
     <FormDataMoodleContext.Provider value={{ formDataMoodle, setFormDataMoodle }}>

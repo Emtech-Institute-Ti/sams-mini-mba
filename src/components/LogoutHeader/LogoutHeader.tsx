@@ -6,6 +6,7 @@ const LogoutHeader: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogoutClick = () => {
+    localStorage.clear();
     navigate('/login');
   };
 

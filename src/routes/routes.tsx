@@ -13,6 +13,8 @@ import DashboardAccount from '../components/DashboardAccount/DashboardAccount';
 import DashboardPaymentHistory from '../components/DashboardPaymentHistory/DashboardPaymentHistory';
 import DashboardPayment from '../components/DashboardPayment/DashboardPayment';
 import RedirectToMoodle from '../components/MoodleRedirect/MoodleRedirect';
+import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
+
 const AppRoutes: React.FC = () => {
   return (
     <Router>
@@ -24,7 +26,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/mastercourse" element={<MasterCoursePage />} />
         <Route path="/paymentcash" element={<PaymentCashPage />} />
         <Route path="/folioform" element={<FolioFormPage />} />
-        <Route path="/campusdashboard" element={<CampusDashboardPage />}>
+        <Route path="/campusdashboard" element={<PrivateRoute />}>
+          <Route index element={<CampusDashboardPage />} />
           <Route path="account" element={<DashboardAccount />} />
           <Route path="payment-history" element={<DashboardPaymentHistory />} />
           <Route path="payment" element={<DashboardPayment />} />
