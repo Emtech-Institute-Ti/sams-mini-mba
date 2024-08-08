@@ -145,7 +145,7 @@ const RegistrationForm: React.FC = () => {
               <option value="" disabled>
                 Selecciona el curso de tu interés
               </option>
-              {courses &&
+              {Array.isArray(courses) &&
                 courses.map((course) => (
                   <option key={course.course_id} value={course.course_name}>
                     {course.course_name}
