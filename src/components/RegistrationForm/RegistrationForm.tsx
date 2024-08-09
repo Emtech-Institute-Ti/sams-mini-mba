@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { avataricon } from '../../utils/images';
 import PaymentMethodSelection from '../PaymentMethodSelection/PaymentMethodSelection';
 import { useCreateStudent } from '../../hooks/useCreateStudent/useCreateStudent';
@@ -7,7 +6,6 @@ import { useGetCoursesById } from '../../hooks/useGetCoursesById/useGetCoursesBy
 
 const RegistrationForm: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
-  const location = useLocation();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -18,17 +16,9 @@ const RegistrationForm: React.FC = () => {
     courseOfInterest: '',
   });
 
-  const {
-    mutate: registerStudent,
-    status,
-    isError,
-    error: registerError,
-    isSuccess,
-  } = useCreateStudent();
-
-  const selectedCourseId = location.search
-    ? parseInt(new URLSearchParams(location.search).get('course') || '')
-    : null;
+  const selectedCourseId = formData.courseOfInterest
+    ? parseInt(formData.courseOfInterest, 10)
+    : undefined;
 
   const { data: selectedCourseData } = useGetCoursesById(selectedCourseId || 1);
 
@@ -36,10 +26,18 @@ const RegistrationForm: React.FC = () => {
     if (selectedCourseData) {
       setFormData((prev) => ({
         ...prev,
-        courseOfInterest: selectedCourseData.course.course_name,
+        courseOfInterest: selectedCourseData.course.course_id.toString(),
       }));
     }
   }, [selectedCourseData]);
+
+  const {
+    mutate: registerStudent,
+    status,
+    isError,
+    error: registerError,
+    isSuccess,
+  } = useCreateStudent();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -149,7 +147,7 @@ const RegistrationForm: React.FC = () => {
             className="w-full p-4 border border-secondaryPurple rounded-lg text-secondaryPurple font-bold"
             name="courseOfInterest"
             value={formData.courseOfInterest}
-            onChange={handleChange}
+            onChange={handleChange} // Actualiza el courseId aquí
           >
             <option value="" disabled>
               Selecciona el curso de tu interés

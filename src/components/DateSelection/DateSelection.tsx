@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { growthlogo, arrowright } from '../../utils/images';
+import { masterlogo, growthlogo, arrowright } from '../../utils/images';
 import { useSubscriptionTypes } from '../../hooks/useSubscriptionTypes/useSubscriptionTypes';
 import { useGetCoursesById } from '../../hooks/useGetCoursesById/useGetCoursesById';
 
@@ -60,12 +60,15 @@ const DateSelection: React.FC = () => {
     });
   };
 
+  const courseLogo = courseId === 1 ? growthlogo : masterlogo;
+  const courseName = courseId === 1 ? 'Growth Accelerator' : 'Master Manager';
+
   return (
     <section className="bg-white p-6 md:p-8 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-screen-md mx-auto">
       <div className="p-6 md:p-8 flex flex-col justify-center border-b md:border-b-0 md:border-r border-secondaryPurple">
         <img
-          src={growthlogo}
-          alt="Growth Accelerator Logo"
+          src={courseLogo}
+          alt={`${courseName} Logo`}
           className="mb-4 mx-auto"
         />
         <p className="text-gray-700 mb-6">
