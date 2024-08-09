@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { cashpayment, growthlogo, masterlogo } from '../../utils/images';
-import { useNavigate } from 'react-router-dom';
 import useGenerateBarcode from '../../hooks/useGenerateBarcode/useGenerateBarcode';
 
 const PaymentDetails: React.FC = () => {
   const navigate = useNavigate();
-  const [paymentType, setPaymentType] = useState<1 | 2>(1);
-  const [courseId, setCourseId] = useState<number>(1);
+  const location = useLocation();
+  const { selectedSubscription, courseId } = location.state || {};
+
+  const paymentType = selectedSubscription === 'Permanent' ? 2 : 1;
+
   const [barcodeCache, setBarcodeCache] = useState<{
     [key: number]: { [key: number]: string };
   }>({});
@@ -100,34 +103,6 @@ const PaymentDetails: React.FC = () => {
             onClick={() => navigate('/folioform')}
           >
             Valida tu folio
-          </button>
-        </div>
-        <div className="mt-4">
-          <button
-            className={`px-4 py-2 rounded-full ${paymentType === 1 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => setPaymentType(1)}
-          >
-            Pago Mensual
-          </button>
-          <button
-            className={`ml-2 px-4 py-2 rounded-full ${paymentType === 2 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => setPaymentType(2)}
-          >
-            Pago Permanente
-          </button>
-        </div>
-        <div className="mt-4">
-          <button
-            className={`px-4 py-2 rounded-full ${courseId === 1 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => setCourseId(1)}
-          >
-            Growth Accelerator
-          </button>
-          <button
-            className={`ml-2 px-4 py-2 rounded-full ${courseId === 2 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => setCourseId(2)}
-          >
-            Master Management
           </button>
         </div>
       </div>

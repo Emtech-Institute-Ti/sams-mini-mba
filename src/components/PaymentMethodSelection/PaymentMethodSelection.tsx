@@ -2,24 +2,33 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { onlinepayment, cashpayment } from '../../utils/images';
 
-const PaymentMethodSelection: React.FC<{ onClose: () => void }> = ({
+interface PaymentMethodSelectionProps {
+  onClose: () => void;
+  courseId: number;
+}
+
+const PaymentMethodSelection: React.FC<PaymentMethodSelectionProps> = ({
   onClose,
+  courseId,
 }) => {
   const navigate = useNavigate();
 
   const handleCashPaymentClick = () => {
-    navigate('/paymentcash');
+    navigate('/course-date', { state: { courseId } });
   };
 
   const handleOnlinePaymentClick = () => {
-    navigate('/coursedate');
+    navigate('/paymentcash', { state: { courseId } });
   };
+
   return (
     <div className="relative bg-white p-16 rounded-lg text-center w-full max-w-5xl mx-auto">
       <button
         onClick={onClose}
         className="absolute top-4 right-4 text-gray-700 text-2xl"
-      ></button>
+      >
+        &times;
+      </button>
       <h2 className="text-2xl font-bold text-secondaryPurple mb-8">
         ¡Registro exitoso!
       </h2>

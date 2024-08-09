@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { growthlogo } from '../../utils/images';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { growthlogo, arrowright } from '../../utils/images';
 import { useSubscriptionTypes } from '../../hooks/useSubscriptionTypes/useSubscriptionTypes';
-import { useGetCourses } from '../../hooks/useGetCourses/useGetCourses';
+import { useGetCoursesById } from '../../hooks/useGetCoursesById/useGetCoursesById';
 
 const DateSelection: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { courseId } = location.state || {};
+
   const {
     data: subscriptionData,
     isLoading: subscriptionLoading,
@@ -14,7 +20,7 @@ const DateSelection: React.FC = () => {
     data: courseData,
     isLoading: courseLoading,
     error: courseError,
-  } = useGetCourses();
+  } = useGetCoursesById(courseId);
 
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedSubscription, setSelectedSubscription] = useState<string>('');
@@ -22,60 +28,60 @@ const DateSelection: React.FC = () => {
   const [otherDates, setOtherDates] = useState<string[]>([]);
 
   useEffect(() => {
-    if (courseData && Array.isArray(courseData)) {
-      const allDates: string[] = courseData.flatMap(
-        (course) => course.course_next_opening_dates || []
-      );
+    if (courseData?.course?.course_next_opening_dates) {
+      const allDates: string[] = courseData.course.course_next_opening_dates;
+
       if (allDates.length > 0) {
         const sortedDates = allDates.sort(
           (a, b) => new Date(a).getTime() - new Date(b).getTime()
         );
         setNextDate(sortedDates[0]);
         setOtherDates(sortedDates.slice(1));
-        setSelectedDate(sortedDates[0]); // Set the first available date as the default selected date
+        setSelectedDate(sortedDates[0]);
+      } else {
+        console.error('No hay fechas disponibles en courseData');
       }
+    } else {
+      console.error('courseData no contiene fechas de apertura', courseData);
     }
   }, [courseData]);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value);
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
   };
 
-  const handleSubscriptionChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSelectedSubscription(event.target.value);
+  const handleSubscriptionChange = (type: string) => {
+    setSelectedSubscription(type);
   };
 
-  const handleSubmit = () => {
-    console.log('Fecha seleccionada:', selectedDate);
-    console.log('Tipo de suscripción seleccionada:', selectedSubscription);
+  const handleNextClick = () => {
+    navigate('/paymentcash', {
+      state: { selectedDate, selectedSubscription, courseId },
+    });
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-center items-center bg-white shadow-lg rounded-lg max-w-6xl mx-auto overflow-hidden">
-      <div className="w-full md:w-1/2 p-8 bg-gray-50 flex flex-col items-center">
+    <section className="bg-white p-6 md:p-8 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-screen-md mx-auto">
+      <div className="p-6 md:p-8 flex flex-col justify-center border-b md:border-b-0 md:border-r border-secondaryPurple">
         <img
           src={growthlogo}
           alt="Growth Accelerator Logo"
-          className="mx-auto mb-4 w-32 md:w-48"
+          className="mb-4 mx-auto"
         />
-        <p className="text-gray-700 text-center">
+        <p className="text-gray-700 mb-6">
           Te preparamos para liderar con visión estratégica en un mercado
           competitivo. Inscríbete hoy y sé parte de una comunidad dedicada al
           desarrollo empresarial.
         </p>
-        <p className="text-customBlue text-center mt-4 font-bold">
-          ¡Tu futuro comienza aquí!
-        </p>
+        <div className="flex items-center text-customBlue font-bold">
+          <img src={arrowright} className="h-6 w-6 mr-2" />
+          <span>¡Tu futuro comienza aquí!</span>
+        </div>
       </div>
-      <div className="w-full md:w-1/2 p-8">
-        <h3 className="text-xl font-bold text-secondaryPurple mb-4 text-center">
+      <div className="p-6 md:p-8 bg-gray-50 rounded-lg">
+        <h3 className="text-lg font-bold text-secondaryPurple mb-6 text-center md:text-left">
           Selecciona una fecha de inicio
         </h3>
-        <p className="text-gray-700 mb-4 text-center">
-          Próxima fecha de inicio:
-        </p>
         {courseLoading ? (
           <p className="text-gray-700 text-center">
             Cargando fechas de inicio...
@@ -84,107 +90,105 @@ const DateSelection: React.FC = () => {
           <p className="text-red-500 text-center">{courseError.message}</p>
         ) : (
           <>
-            {nextDate && (
-              <div className="mb-4 text-center">
+            <div className="mb-6">
+              <label className="inline-flex items-center">
                 <input
                   type="radio"
-                  id={nextDate}
-                  name="date"
+                  name="startDate"
                   value={nextDate}
                   checked={selectedDate === nextDate}
-                  onChange={handleDateChange}
-                  className="mr-2"
+                  onChange={() => handleDateChange(nextDate)}
+                  className="form-radio text-secondaryPurple"
                 />
-                <label htmlFor={nextDate} className="text-customBlue font-bold">
+                <span className="ml-2 font-semibold text-customBlue">
                   {new Date(nextDate).toLocaleDateString('es-ES', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   })}
-                </label>
+                </span>
+              </label>
+            </div>
+            <hr className="mb-6 border-secondaryPurple" />
+            <div className="mb-6">
+              <p className="mb-4">Siguientes fechas:</p>
+              <div className="flex flex-col space-y-4">
+                {otherDates.map((date) => (
+                  <label key={date} className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="startDate"
+                      value={date}
+                      checked={selectedDate === date}
+                      onChange={() => handleDateChange(date)}
+                      className="form-radio text-customBlue"
+                    />
+                    <span className="ml-2">
+                      {new Date(date).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  </label>
+                ))}
               </div>
-            )}
-            <hr className="border-gray-300 mb-4" />
-            <p className="text-gray-700 mb-4 text-center">Siguientes fechas:</p>
-            {otherDates.map((date) => (
-              <div key={date} className="mb-2 text-center">
-                <input
-                  type="radio"
-                  id={date}
-                  name="date"
-                  value={date}
-                  checked={selectedDate === date}
-                  onChange={handleDateChange}
-                  className="mr-2"
-                />
-                <label htmlFor={date}>
-                  {new Date(date).toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </label>
-              </div>
-            ))}
+            </div>
+            <hr className="mb-6 border-secondaryPurple" />
           </>
         )}
 
-        {subscriptionLoading && !subscriptionData && (
+        {subscriptionLoading ? (
           <p className="text-gray-700 text-center">
             Cargando tipos de suscripción...
           </p>
-        )}
-        {subscriptionError && !subscriptionData && (
+        ) : subscriptionError ? (
           <p className="text-red-500 text-center">
             {subscriptionError.message}
           </p>
-        )}
-        {subscriptionData && (
-          <div className="mt-4">
-            <h4 className="text-lg font-bold text-secondaryPurple mb-2 text-center">
-              Tipos de suscripción:
-            </h4>
-            <ul>
-              {subscriptionData.subscriptionTypes.map(
-                (type: {
-                  subscription_tp_id: number;
-                  subscription_tp_name: string;
-                }) => (
-                  <li
+        ) : (
+          subscriptionData && (
+            <div className="mb-6">
+              <p className="mb-4">Selecciona el tipo de pago:</p>
+              <div className="flex flex-col space-y-4">
+                {subscriptionData.subscriptionTypes.map((type) => (
+                  <label
                     key={type.subscription_tp_id}
-                    className="mb-2 text-center"
+                    className="inline-flex items-center"
                   >
                     <input
                       type="radio"
-                      id={type.subscription_tp_name}
-                      name="subscription"
+                      name="paymentType"
                       value={type.subscription_tp_name}
                       checked={
                         selectedSubscription === type.subscription_tp_name
                       }
-                      onChange={handleSubscriptionChange}
-                      className="mr-2"
+                      onChange={() =>
+                        handleSubscriptionChange(type.subscription_tp_name)
+                      }
+                      className="form-radio text-customBlue"
                     />
-                    <label htmlFor={type.subscription_tp_name}>
+                    <span className="ml-2">
                       {type.subscription_tp_name === 'Monthly'
-                        ? 'Mensual'
-                        : 'Permanente'}
-                    </label>
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
+                        ? 'Pago mensual'
+                        : 'Pago permanente'}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )
         )}
-
-        <button
-          className="bg-secondaryPurple text-white px-16 py-3 rounded-full mt-4 block mx-auto"
-          onClick={handleSubmit}
-        >
-          Siguiente
-        </button>
+        <div className="flex justify-center">
+          <button
+            onClick={handleNextClick}
+            className="bg-secondaryPurple text-white py-2 px-8 rounded-full hover:bg-customBlue-dark transition duration-300"
+          >
+            Siguiente
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

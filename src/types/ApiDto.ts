@@ -15,9 +15,7 @@ export interface ApiError {
 export interface RegisterStudentPayload {
   firstName: string;
   lastName: string;
-  dateOfBirth: string;
   email: string;
-  password: string;
   sector_company: string;
   rol_company: string;
 }
@@ -31,6 +29,11 @@ export interface Course {
   course_created_at: string;
   course_updated_at: string;
   course_deleted_at: string | null;
+}
+
+export interface CoursesResponse {
+  success: boolean;
+  courses: Course[];
 }
 
 export interface CourseResponse {

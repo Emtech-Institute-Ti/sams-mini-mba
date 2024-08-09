@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import apiRequest from '../../api/apiRequest';
-import { Course, ApiError } from '../../types/ApiDto';
+import { CourseResponse, ApiError } from '../../types/ApiDto';
 
-export const fetchCourseById = async (id: number): Promise<Course> => {
-  const result = await apiRequest<Course>('GET', `/api/courses/${id}`);
+export const fetchCourseById = async (id: number): Promise<CourseResponse> => {
+  const result = await apiRequest<CourseResponse>('GET', `/api/courses/${id}`);
   return result.data;
 };
 
 export const useGetCoursesById = (id: number) => {
-  return useQuery<Course, ApiError>({
+  return useQuery<CourseResponse, ApiError>({
     queryKey: ['course', id],
     queryFn: () => fetchCourseById(id),
   });
