@@ -2,9 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ownerimg, coursebanner } from '../../utils/images';
 import { useGetCourses } from '../../hooks/useGetCourses/useGetCourses';
+import { Course } from '../../types/ApiDto';
 
 const GrowthOwnerSection: React.FC = () => {
-  const { data: courses, isLoading, error } = useGetCourses();
+  const { data: coursesResponse, isLoading, error } = useGetCourses();
   const navigate = useNavigate();
 
   const handleRegisterClick = (courseName: string) => {
@@ -18,6 +19,8 @@ const GrowthOwnerSection: React.FC = () => {
   if (error) {
     return <p>Error al cargar los cursos: {error.message}</p>;
   }
+
+  const courses = coursesResponse?.courses;
 
   return (
     <section className="py-12 bg-white">
@@ -54,7 +57,7 @@ const GrowthOwnerSection: React.FC = () => {
           </ul>
           <div className="flex flex-col space-y-4">
             {courses &&
-              courses.map((course) => (
+              courses.map((course: Course) => (
                 <button
                   key={course.course_id}
                   onClick={() => handleRegisterClick(course.course_name)}

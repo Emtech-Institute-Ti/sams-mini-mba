@@ -16,10 +16,10 @@ import RedirectToMoodle from '../components/MoodleRedirect/MoodleRedirect';
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
 import RecoverPasswordPage from '../pages/RecoverPasswordPage/RecoverPasswordPage';
 import DateSelectionPage from '../pages/DateSelectionPage/DateSelectionPage';
-import PaymentStatusSuccess from '../pages/PaymentStatusSuccess/PaymentStatusSuccess';
-import PaymentStatusFailure from '../pages/PaymentStatusFailure/PaymentStatusFailure';
-import PaymentStatusPending from '../pages/PaymentStatusPending/PaymentStatusPending';
-import Checkout from '../components/Checkout/Checkout';
+// import PaymentStatusSuccess from '../pages/PaymentStatusSuccess/PaymentStatusSuccess';
+// import PaymentStatusFailure from '../pages/PaymentStatusFailure/PaymentStatusFailure';
+// import PaymentStatusPending from '../pages/PaymentStatusPending/PaymentStatusPending';
+// import Checkout from '../components/Checkout/Checkout';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -42,10 +42,10 @@ const AppRoutes: React.FC = () => {
           <Route path="moodle" element={<RedirectToMoodle />} />
         </Route>
         <Route path="/coursedate" element={<CourseDatePage />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/success" element={<PaymentStatusSuccess />} />
-        <Route path="/failure" element={<PaymentStatusFailure />} />
-        <Route path="/pending" element={<PaymentStatusPending />} />
+        {/* <Route path="/checkout" element={<Checkout />} /> */}
+        {/* <Route path="/success" element={<PaymentStatusSuccess />} /> */}
+        {/* <Route path="/failure" element={<PaymentStatusFailure />} /> */}
+        {/* <Route path="/pending" element={<PaymentStatusPending />} /> */}
       </Routes>
     </Router>
   );

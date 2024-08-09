@@ -18,17 +18,21 @@ const ProgramsSection: React.FC = () => {
   const navigate = useNavigate();
 
   const {
-    data: growthCourse,
+    data: growthCourseResponse,
     isLoading: isLoadingGrowth,
     isError: isErrorGrowth,
     error: errorGrowth,
   } = useGetCoursesById(1);
+
   const {
-    data: masterCourse,
+    data: masterCourseResponse,
     isLoading: isLoadingMaster,
     isError: isErrorMaster,
     error: errorMaster,
   } = useGetCoursesById(2);
+
+  const growthCourse = growthCourseResponse?.course;
+  const masterCourse = masterCourseResponse?.course;
 
   const handleRegisterClick = () => {
     navigate('/register');

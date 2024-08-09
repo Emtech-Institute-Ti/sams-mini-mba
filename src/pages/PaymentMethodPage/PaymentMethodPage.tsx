@@ -4,7 +4,7 @@ import PaymentMethodSelection from '../../components/PaymentMethodSelection/Paym
 const PaymentMethodPage: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <PaymentMethodSelection onClose={close} />
+      <PaymentMethodSelection onClose={close} courseId={1} />
     </div>
   );
 };
