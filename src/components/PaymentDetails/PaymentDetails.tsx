@@ -1,45 +1,34 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { cashpayment, growthlogo, masterlogo } from '../../utils/images';
 import { useNavigate } from 'react-router-dom';
-import useGenerateBarcode from '../../hooks/useGenerateBardcode/useGenerateBardcode';
+import useGenerateBarcode from '../../hooks/useGenerateBarcode/useGenerateBarcode';
 
 const PaymentDetails: React.FC = () => {
   const navigate = useNavigate();
-  const [generateBarcode, barcodeResponse] = useGenerateBarcode();
   const [paymentType, setPaymentType] = useState<1 | 2>(1);
   const [courseId, setCourseId] = useState<number>(1);
   const [barcodeCache, setBarcodeCache] = useState<{
     [key: number]: { [key: number]: string };
   }>({});
 
-  const handlePaymentTypeChange = (type: 1 | 2) => {
-    setPaymentType(type);
-  };
+  const { mutateAsync: generateBarcode, status, error } = useGenerateBarcode();
 
-  const handleCourseChange = (id: number) => {
-    setCourseId(id);
-  };
+  const isLoading = status === 'pending';
+  const isError = status === 'error';
 
   const fetchBarcode = useCallback(async () => {
     if (!barcodeCache[courseId] || !barcodeCache[courseId][paymentType]) {
-      await generateBarcode(courseId);
-    }
-  }, [barcodeCache, courseId, paymentType, generateBarcode]);
-
-  useEffect(() => {
-    if (barcodeResponse.data && !barcodeCache[courseId]?.[paymentType]) {
+      const response = await generateBarcode(courseId);
       setBarcodeCache((prevCache) => ({
         ...prevCache,
         [courseId]: {
           ...prevCache[courseId],
           [paymentType]:
-            barcodeResponse.data!.barcodes[
-              paymentType === 1 ? 'monthly' : 'fully'
-            ],
+            response.barcodes[paymentType === 1 ? 'monthly' : 'fully'],
         },
       }));
     }
-  }, [barcodeResponse, courseId, paymentType]);
+  }, [barcodeCache, courseId, paymentType, generateBarcode]);
 
   useEffect(() => {
     fetchBarcode();
@@ -64,7 +53,7 @@ const PaymentDetails: React.FC = () => {
           />
         </div>
         <h2 className="text-xl font-bold text-secondaryPurple mb-8">
-          Realizar tu pago en caja con el siguiente código:
+          Realiza tu pago en caja con el siguiente código:
         </h2>
         <div className="bg-white shadow-md rounded-lg p-8 flex justify-between items-start">
           <div className="w-1/2 pr-8 border-r border-secondaryPurple">
@@ -90,14 +79,18 @@ const PaymentDetails: React.FC = () => {
               <br />
               Supporting line text lorem ipsum dolor sit amet, consectetur.
             </p>
-            {barcode ? (
-              <img
-                src={barcode}
-                alt="Barcode"
-                className="h-auto w-auto mx-auto"
-              />
-            ) : (
+            {isLoading ? (
               <p>Cargando código de barras...</p>
+            ) : isError ? (
+              <p>Error al cargar el código de barras: {error?.message}</p>
+            ) : (
+              barcode && (
+                <img
+                  src={barcode}
+                  alt="Barcode"
+                  className="h-auto w-auto mx-auto"
+                />
+              )
             )}
           </div>
         </div>
@@ -112,13 +105,13 @@ const PaymentDetails: React.FC = () => {
         <div className="mt-4">
           <button
             className={`px-4 py-2 rounded-full ${paymentType === 1 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => handlePaymentTypeChange(1)}
+            onClick={() => setPaymentType(1)}
           >
             Pago Mensual
           </button>
           <button
             className={`ml-2 px-4 py-2 rounded-full ${paymentType === 2 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => handlePaymentTypeChange(2)}
+            onClick={() => setPaymentType(2)}
           >
             Pago Permanente
           </button>
@@ -126,13 +119,13 @@ const PaymentDetails: React.FC = () => {
         <div className="mt-4">
           <button
             className={`px-4 py-2 rounded-full ${courseId === 1 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => handleCourseChange(1)}
+            onClick={() => setCourseId(1)}
           >
             Growth Accelerator
           </button>
           <button
             className={`ml-2 px-4 py-2 rounded-full ${courseId === 2 ? 'bg-secondaryPurple text-white' : 'bg-gray-200'}`}
-            onClick={() => handleCourseChange(2)}
+            onClick={() => setCourseId(2)}
           >
             Master Management
           </button>
