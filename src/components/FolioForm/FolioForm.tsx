@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { foliobanner, check } from '../../utils/images';
-import useValidateFolioTicket from '../../hooks/useValidateFolioTicket/useValidateFolioTicket';
 
 const FolioForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -9,14 +8,13 @@ const FolioForm: React.FC = () => {
   });
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [validateFolioTicket, { loading, error }] = useValidateFolioTicket();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleValidateClick = async (e: React.FormEvent) => {
+  const handleValidateClick = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validar folio
@@ -37,11 +35,9 @@ const FolioForm: React.FC = () => {
       return;
     }
 
-    const response = await validateFolioTicket(formData);
-    if (!response.error) {
-      setIsValid(true);
-      setErrorMessage('');
-    }
+    // Si ambos son válidos
+    setIsValid(true);
+    setErrorMessage('');
   };
 
   return (
@@ -124,39 +120,12 @@ const FolioForm: React.FC = () => {
                 <button
                   type="submit"
                   className="w-full bg-secondaryPurple text-white py-3 md:py-4 rounded-full hover:bg-secondaryPurple-dark transition duration-300 flex items-center justify-center"
-                  disabled={loading}
                 >
-                  {loading ? (
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                  ) : (
-                    'Validar'
-                  )}
+                  Validar
                 </button>
               </form>
               {errorMessage && (
                 <p className="text-red-500 mt-4 text-center">{errorMessage}</p>
-              )}
-              {error && (
-                <p className="text-red-500 mt-4 text-center">{error}</p>
               )}
             </div>
           )}

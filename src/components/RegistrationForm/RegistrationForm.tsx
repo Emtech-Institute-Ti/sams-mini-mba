@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { avataricon } from '../../utils/images';
 import PaymentMethodSelection from '../PaymentMethodSelection/PaymentMethodSelection';
-import useCreateStudent from '../../hooks/useCreateStudent/useCreateStudent';
-import useGetCourses from '../../hooks/useGetCourses/useGetCourses';
+import { useCreateStudent } from '../../hooks/useCreateStudent/useCreateStudent';
+import { useGetCourses } from '../../hooks/useGetCourses/useGetCourses';
 
 const RegistrationForm: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const location = useLocation();
-  const { data: courses } = useGetCourses();
+  const { data: courses, isLoading, error } = useGetCourses();
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,7 +21,13 @@ const RegistrationForm: React.FC = () => {
     courseOfInterest: '',
   });
 
-  const [registerStudent] = useCreateStudent();
+  const {
+    mutate: registerStudent,
+    status,
+    isError,
+    error: registerError,
+    isSuccess,
+  } = useCreateStudent();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -37,15 +44,21 @@ const RegistrationForm: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleRegisterClick = async () => {
-    await registerStudent(formData);
-    console.log(formData, 'formdata');
-    setShowModal(true);
+  const handleRegisterClick = () => {
+    registerStudent(formData);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setShowModal(true);
+    }
+  }, [isSuccess]);
+
+  const isRegistering = status === 'pending';
 
   return (
     <div className="relative">
@@ -56,112 +69,132 @@ const RegistrationForm: React.FC = () => {
         <div className="flex justify-center mb-8">
           <img src={avataricon} alt="Avatar Icon" className="h-16 w-16" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
-          <div>
-            <label className="block text-sm font-bold text-secondaryPurple mb-2">
-              Nombre
-            </label>
-            <input
-              className="p-4 border border-secondaryPurple rounded-lg w-full"
-              placeholder="Escribe tu nombre aquí"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-secondaryPurple mb-2">
-              Apellido
-            </label>
-            <input
-              className="p-4 border border-secondaryPurple rounded-lg w-full"
-              placeholder="Escribe tus apellidos aquí"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="mb-8">
-          <label className="block text-sm font-bold text-secondaryPurple mb-2">
-            Correo electrónico
-          </label>
-          <input
-            className="w-full p-4 border border-secondaryPurple rounded-lg"
-            placeholder="Escribe tu correo electrónico"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        <h3 className="text-lg md:text-xl font-bold text-customBlack mb-6 text-center">
-          Información laboral
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
-          <div>
-            <label className="block text-sm font-bold text-secondaryPurple mb-2">
-              Sector al que perteneces
-            </label>
-            <input
-              className="p-4 border border-secondaryPurple rounded-lg w-full"
-              placeholder="Escribe el sector aquí"
-              name="sector_company"
-              value={formData.sector_company}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-secondaryPurple mb-2">
-              Rol que desempeñas
-            </label>
-            <input
-              className="p-4 border border-secondaryPurple rounded-lg w-full"
-              placeholder="Escribe tu rol aquí"
-              name="rol_company"
-              value={formData.rol_company}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="mb-8">
-          <label className="block text-sm font-bold text-secondaryPurple mb-2">
-            ¿Cuál es el curso de tu interés?
-          </label>
-          {formData.courseOfInterest ? (
-            <input
-              className="w-full p-4 border border-secondaryPurple rounded-lg text-secondaryPurple font-bold"
-              name="courseOfInterest"
-              value={formData.courseOfInterest}
-              onChange={handleChange}
-              readOnly
-            />
-          ) : (
-            <select
-              className="w-full p-4 border border-secondaryPurple rounded-lg text-secondaryPurple font-bold"
-              name="courseOfInterest"
-              value={formData.courseOfInterest}
-              onChange={handleChange}
-            >
-              <option value="" disabled>
-                Selecciona el curso de tu interés
-              </option>
-              {Array.isArray(courses) &&
-                courses.map((course) => (
-                  <option key={course.course_id} value={course.course_name}>
-                    {course.course_name}
+
+        {/* Mostrar un mensaje de carga mientras se obtienen los cursos */}
+        {isLoading && <div>Cargando cursos...</div>}
+
+        {/* Mostrar un mensaje de error si ocurre un problema al obtener los cursos */}
+        {error && <div>Error al cargar cursos: {error.message}</div>}
+
+        {!isLoading && !error && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
+              <div>
+                <label className="block text-sm font-bold text-secondaryPurple mb-2">
+                  Nombre
+                </label>
+                <input
+                  className="p-4 border border-secondaryPurple rounded-lg w-full"
+                  placeholder="Escribe tu nombre aquí"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-secondaryPurple mb-2">
+                  Apellido
+                </label>
+                <input
+                  className="p-4 border border-secondaryPurple rounded-lg w-full"
+                  placeholder="Escribe tus apellidos aquí"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <label className="block text-sm font-bold text-secondaryPurple mb-2">
+                Correo electrónico
+              </label>
+              <input
+                className="w-full p-4 border border-secondaryPurple rounded-lg"
+                placeholder="Escribe tu correo electrónico"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <h3 className="text-lg md:text-xl font-bold text-customBlack mb-6 text-center">
+              Información laboral
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8">
+              <div>
+                <label className="block text-sm font-bold text-secondaryPurple mb-2">
+                  Sector al que perteneces
+                </label>
+                <input
+                  className="p-4 border border-secondaryPurple rounded-lg w-full"
+                  placeholder="Escribe el sector aquí"
+                  name="sector_company"
+                  value={formData.sector_company}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-secondaryPurple mb-2">
+                  Rol que desempeñas
+                </label>
+                <input
+                  className="p-4 border border-secondaryPurple rounded-lg w-full"
+                  placeholder="Escribe tu rol aquí"
+                  name="rol_company"
+                  value={formData.rol_company}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="mb-8">
+              <label className="block text-sm font-bold text-secondaryPurple mb-2">
+                ¿Cuál es el curso de tu interés?
+              </label>
+              {formData.courseOfInterest ? (
+                <input
+                  className="w-full p-4 border border-secondaryPurple rounded-lg text-secondaryPurple font-bold"
+                  name="courseOfInterest"
+                  value={formData.courseOfInterest}
+                  onChange={handleChange}
+                  readOnly
+                />
+              ) : (
+                <select
+                  className="w-full p-4 border border-secondaryPurple rounded-lg text-secondaryPurple font-bold"
+                  name="courseOfInterest"
+                  value={formData.courseOfInterest}
+                  onChange={handleChange}
+                >
+                  <option value="" disabled>
+                    Selecciona el curso de tu interés
                   </option>
-                ))}
-            </select>
-          )}
-        </div>
-        <div className="text-center">
-          <button
-            onClick={handleRegisterClick}
-            className="bg-secondaryPurple text-white px-6 py-2 rounded-full hover:bg-customBlue-dark transition duration-300"
-          >
-            Registrarme
-          </button>
-        </div>
+                  {Array.isArray(courses) &&
+                    courses.map((course) => (
+                      <option key={course.course_id} value={course.course_name}>
+                        {course.course_name}
+                      </option>
+                    ))}
+                </select>
+              )}
+            </div>
+
+            {/* Mostrar error de registro */}
+            {isError && (
+              <div className="text-red-500 mb-4 text-center">
+                Error al registrar: {registerError?.message}
+              </div>
+            )}
+
+            <div className="text-center">
+              <button
+                onClick={handleRegisterClick}
+                className="bg-secondaryPurple text-white px-6 py-2 rounded-full hover:bg-customBlue-dark transition duration-300"
+                disabled={isRegistering}
+              >
+                {isRegistering ? 'Registrando...' : 'Registrarme'}
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {showModal && (

@@ -1,41 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import apiRequest from '../../api/apiRequest';
-import { ApiResponse, Course } from '../../types/ApiDto';
-import axios from 'axios';
+import { Course } from '../../types/ApiDto';
 
-const useGetCourses = (): ApiResponse<Course[]> => {
-  const [response, setResponse] = useState<ApiResponse<Course[]>>({
-    data: null,
-    loading: true,
-    error: null,
+export const fetchCourses = async (): Promise<Course[]> => {
+  const result = await apiRequest<Course[]>('GET', '/api/courses');
+  return result.data;
+};
+
+export const useGetCourses = () => {
+  return useQuery<Course[], Error>({
+    queryKey: ['courses'],
+    queryFn: fetchCourses,
   });
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const result = await apiRequest<Course[]>('GET', '/api/courses');
-        setResponse({ data: result.data, loading: false, error: null });
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          setResponse({
-            data: null,
-            loading: false,
-            error: error.response?.data?.message || 'API request error',
-          });
-        } else {
-          setResponse({
-            data: null,
-            loading: false,
-            error: 'An unknown error occurred',
-          });
-        }
-      }
-    };
-
-    fetchCourses();
-  }, []);
-
-  return response;
 };
 
 export default useGetCourses;

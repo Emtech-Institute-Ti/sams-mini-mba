@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginbanner } from '../../utils/images';
-import useLoginStudent from '../../hooks/useLoginStudent/useLoginStudent';
 import { useFormDataMoodle } from '../../context/moodle/MoodleContext';
+import { useLoginStudent } from '../../hooks/useLoginStudent/useLoginStudent';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
@@ -11,8 +11,10 @@ const LoginForm: React.FC = () => {
     email: '',
     password: '',
   });
-  const [loginStudent, { loading }] = useLoginStudent();
-  const [errorMessage, setErrorMessage] = useState('');
+
+  const { mutate: loginStudent, status, error } = useLoginStudent();
+  const isLoading = status === 'pending';
+  const isError = status === 'error';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,16 +23,19 @@ const LoginForm: React.FC = () => {
 
   const handleLoginClick = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
 
-    const response = await loginStudent(formData);
-    if (response.data && response.data.success) {
-      localStorage.setItem('wsToken', response.data.token);
-      setFormDataMoodle(formData);
-      navigate('/campusdashboard');
-    } else if (response.error) {
-      setErrorMessage(response.error);
-    }
+    loginStudent(formData, {
+      onSuccess: (response) => {
+        if (response.success) {
+          localStorage.setItem('wsToken', response.token);
+          setFormDataMoodle(formData);
+          navigate('/campusdashboard');
+        }
+      },
+      onError: (err: Error) => {
+        console.error('Error en la mutación:', err.message);
+      },
+    });
   };
 
   const handleForgotPasswordClick = () => {
@@ -52,8 +57,10 @@ const LoginForm: React.FC = () => {
             Iniciar sesión
           </h2>
           <form className="space-y-10" onSubmit={handleLoginClick}>
-            {errorMessage && (
-              <p className="text-red-500 text-center">{errorMessage}</p>
+            {isError && (
+              <p className="text-red-500 text-center">
+                {error?.message || 'Error al intentar iniciar sesión.'}
+              </p>
             )}
             <div>
               <label
@@ -94,8 +101,9 @@ const LoginForm: React.FC = () => {
             <button
               type="submit"
               className="w-full bg-secondaryPurple text-white py-4 rounded-full hover:bg-secondaryPurple-dark transition duration-300"
+              disabled={isLoading}
             >
-              {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </form>
           <div className="text-center mt-6">

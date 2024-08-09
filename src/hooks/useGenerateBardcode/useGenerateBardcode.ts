@@ -1,45 +1,19 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 import apiRequest from '../../api/apiRequest';
-import { ApiResponse, BarcodeResponse } from '../../types/ApiDto';
+import { BarcodeResponse, ApiError } from '../../types/ApiDto';
 
-const useGenerateBarcode = (): [
-  (id: number) => Promise<void>,
-  ApiResponse<BarcodeResponse>,
-] => {
-  const [response, setResponse] = useState<ApiResponse<BarcodeResponse>>({
-    data: null,
-    loading: false,
-    error: null,
+export const generateBarcode = async (id: number): Promise<BarcodeResponse> => {
+  const result = await apiRequest<BarcodeResponse>(
+    'GET',
+    `/api/payments/barcode/${id}`
+  );
+  return result.data;
+};
+
+export const useGenerateBarcode = () => {
+  return useMutation<BarcodeResponse, ApiError, number>({
+    mutationFn: generateBarcode,
   });
-
-  const generateBarcode = async (id: number): Promise<void> => {
-    setResponse({ data: null, loading: true, error: null });
-
-    try {
-      const result = await apiRequest<BarcodeResponse>(
-        'GET',
-        `/api/payments/barcode/${id}`
-      );
-      setResponse({ data: result.data, loading: false, error: null });
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        setResponse({
-          data: null,
-          loading: false,
-          error: error.response?.data?.message || 'API request error',
-        });
-      } else {
-        setResponse({
-          data: null,
-          loading: false,
-          error: 'An unknown error occurred',
-        });
-      }
-    }
-  };
-
-  return [generateBarcode, response];
 };
 
 export default useGenerateBarcode;

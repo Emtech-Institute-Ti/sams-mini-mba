@@ -1,22 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ownerimg, coursebanner } from '../../utils/images';
-import useGetCourses from '../../hooks/useGetCourses/useGetCourses';
+import { useGetCourses } from '../../hooks/useGetCourses/useGetCourses';
 
 const GrowthOwnerSection: React.FC = () => {
-  const { data: courses, loading, error } = useGetCourses();
+  const { data: courses, isLoading, error } = useGetCourses();
   const navigate = useNavigate();
 
   const handleRegisterClick = (courseName: string) => {
     navigate(`/register?course=${encodeURIComponent(courseName)}`);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <p>Cargando cursos...</p>;
   }
 
   if (error) {
-    return <p>Error al cargar los cursos: {error}</p>;
+    return <p>Error al cargar los cursos: {error.message}</p>;
   }
 
   return (

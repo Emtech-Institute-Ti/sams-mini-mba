@@ -10,15 +10,25 @@ import {
   bannercourse,
   bgcourses,
 } from '../../utils/images';
-import useGetCoursesById from '../../hooks/useGetCoursesById/useGetCoursesById';
+import { useGetCoursesById } from '../../hooks/useGetCoursesById/useGetCoursesById';
 import { Course } from '../../types/ApiDto';
 import './custom-slick.css';
 
 const ProgramsSection: React.FC = () => {
   const navigate = useNavigate();
 
-  const growthCourseResponse = useGetCoursesById(1);
-  const masterCourseResponse = useGetCoursesById(2);
+  const {
+    data: growthCourse,
+    isLoading: isLoadingGrowth,
+    isError: isErrorGrowth,
+    error: errorGrowth,
+  } = useGetCoursesById(1);
+  const {
+    data: masterCourse,
+    isLoading: isLoadingMaster,
+    isError: isErrorMaster,
+    error: errorMaster,
+  } = useGetCoursesById(2);
 
   const handleRegisterClick = () => {
     navigate('/register');
@@ -31,9 +41,6 @@ const ProgramsSection: React.FC = () => {
   const handleMasterCourseClick = (course: Course) => {
     navigate('/mastercourse', { state: { course } });
   };
-
-  const growthCourse = growthCourseResponse.data;
-  const masterCourse = masterCourseResponse.data;
 
   const { ref: titleRef, inView: titleInView } = useInView({
     triggerOnce: true,
@@ -130,7 +137,13 @@ const ProgramsSection: React.FC = () => {
                       alt="Growth Accelerator Logo"
                       className="mx-auto mb-6"
                     />
-                    {growthCourse ? (
+                    {isLoadingGrowth ? (
+                      <p className="text-gray-700 mb-6">Cargando...</p>
+                    ) : isErrorGrowth ? (
+                      <p className="text-red-500 mb-6">
+                        {errorGrowth?.message}
+                      </p>
+                    ) : growthCourse ? (
                       <p className="text-customBlack mb-6">
                         En el dinámico y competitivo mundo empresarial,{' '}
                         <span className="font-bold text-customBlack">
@@ -181,7 +194,13 @@ const ProgramsSection: React.FC = () => {
                       alt="Master Management Logo"
                       className="mx-auto mb-10 p-8"
                     />
-                    {masterCourse ? (
+                    {isLoadingMaster ? (
+                      <p className="text-gray-700 mb-6">Cargando...</p>
+                    ) : isErrorMaster ? (
+                      <p className="text-red-500 mb-6">
+                        {errorMaster?.message}
+                      </p>
+                    ) : masterCourse ? (
                       <p className="text-gray-700 mb-4">
                         En el entorno laboral moderno, los gerentes que pueden
                         dirigir con eficacia e inspirar a sus equipos son la
@@ -239,7 +258,11 @@ const ProgramsSection: React.FC = () => {
                 alt="Growth Accelerator Logo"
                 className="mx-auto mb-6"
               />
-              {growthCourse ? (
+              {isLoadingGrowth ? (
+                <p className="text-gray-700 mb-6">Cargando...</p>
+              ) : isErrorGrowth ? (
+                <p className="text-red-500 mb-6">{errorGrowth?.message}</p>
+              ) : growthCourse ? (
                 <p className="text-customBlack mb-6">
                   En el dinámico y competitivo mundo empresarial, {''}
                   <span className="font-bold text-customBlack">
@@ -292,7 +315,11 @@ const ProgramsSection: React.FC = () => {
                 alt="Master Management Logo"
                 className="mx-auto mb-10 p-8"
               />
-              {masterCourse ? (
+              {isLoadingMaster ? (
+                <p className="text-gray-700 mb-6">Cargando...</p>
+              ) : isErrorMaster ? (
+                <p className="text-red-500 mb-6">{errorMaster?.message}</p>
+              ) : masterCourse ? (
                 <p className="text-gray-700 mb-4">
                   En el entorno laboral moderno, los gerentes que pueden dirigir
                   con eficacia e inspirar a sus equipos son la clave para el

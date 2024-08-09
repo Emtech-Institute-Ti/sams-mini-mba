@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginbanner } from '../../utils/images';
-import useRecoverPassword from '../../hooks/useRecoverPassword/useRecoverPassword';
-import useVerifyToken from '../../hooks/useVerifyToken/useVerifyToken';
-import useResetPassword from '../../hooks/useResetPassword/useResetPassword';
+import { useRecoverPassword } from '../../hooks/useRecoverPassword/useRecoverPassword';
+import { useVerifyToken } from '../../hooks/useVerifyToken/useVerifyToken';
+import { useResetPassword } from '../../hooks/useResetPassword/useResetPassword';
 
 const RecoverPasswordForm: React.FC = () => {
   const navigate = useNavigate();
@@ -12,18 +12,19 @@ const RecoverPasswordForm: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [step, setStep] = useState(1); // 1: request reset, 2: verify token, 3: reset password
 
-  const [
-    recoverPassword,
-    { loading: recoverLoading, error: recoverError, data: recoverData },
-  ] = useRecoverPassword();
-  const [
-    verifyToken,
-    { loading: verifyLoading, error: verifyError, data: verifyData },
-  ] = useVerifyToken();
-  const [
-    resetPassword,
-    { loading: resetLoading, error: resetError, data: resetData },
-  ] = useResetPassword();
+  const recoverPasswordMutation = useRecoverPassword();
+  const verifyTokenMutation = useVerifyToken();
+  const resetPasswordMutation = useResetPassword();
+
+  const isRecoverLoading = recoverPasswordMutation.status === 'pending';
+  const isRecoverError = recoverPasswordMutation.status === 'error';
+
+  const isVerifyLoading = verifyTokenMutation.status === 'pending';
+  const isVerifyError = verifyTokenMutation.status === 'error';
+
+  const isResetLoading = resetPasswordMutation.status === 'pending';
+  const isResetSuccess = resetPasswordMutation.status === 'success';
+  const isResetError = resetPasswordMutation.status === 'error';
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -39,23 +40,28 @@ const RecoverPasswordForm: React.FC = () => {
 
   const handleRecoverClick = async (e: React.FormEvent) => {
     e.preventDefault();
-    await recoverPassword(email);
-    if (!recoverError) {
-      setStep(2);
-    }
+    recoverPasswordMutation.mutate(email, {
+      onSuccess: () => {
+        setStep(2);
+      },
+    });
   };
 
   const handleVerifyClick = async (e: React.FormEvent) => {
     e.preventDefault();
-    await verifyToken({ email, token });
-    if (!verifyError) {
-      setStep(3);
-    }
+    verifyTokenMutation.mutate(
+      { email, token },
+      {
+        onSuccess: () => {
+          setStep(3);
+        },
+      }
+    );
   };
 
   const handleResetClick = async (e: React.FormEvent) => {
     e.preventDefault();
-    await resetPassword({ email, token, newPassword });
+    resetPasswordMutation.mutate({ email, token, newPassword });
   };
 
   return (
@@ -72,6 +78,7 @@ const RecoverPasswordForm: React.FC = () => {
           <h2 className="text-2xl md:text-4xl font-bold text-secondaryPurple mb-4 text-center">
             ¿Olvidaste tu contraseña?
           </h2>
+
           {step === 1 && (
             <>
               <p className="text-gray-600 text-center mb-8">
@@ -100,20 +107,19 @@ const RecoverPasswordForm: React.FC = () => {
                 <button
                   type="submit"
                   className="w-full bg-secondaryPurple text-white py-4 rounded-full hover:bg-customBlue transition duration-300"
+                  disabled={isRecoverLoading}
                 >
-                  {recoverLoading ? 'Enviando...' : 'Recuperar contraseña'}
+                  {isRecoverLoading ? 'Enviando...' : 'Recuperar contraseña'}
                 </button>
               </form>
-              {recoverData && (
-                <p className="text-green-500 mt-4 text-center">
-                  {recoverData.message}
+              {isRecoverError && (
+                <p className="text-red-500 mt-4 text-center">
+                  {recoverPasswordMutation.error?.message}
                 </p>
-              )}
-              {recoverError && (
-                <p className="text-red-500 mt-4 text-center">{recoverError}</p>
               )}
             </>
           )}
+
           {step === 2 && (
             <>
               <p className="text-gray-600 text-center mb-8">
@@ -141,20 +147,19 @@ const RecoverPasswordForm: React.FC = () => {
                 <button
                   type="submit"
                   className="w-full bg-secondaryPurple text-white py-4 rounded-full hover:bg-customBlue transition duration-300"
+                  disabled={isVerifyLoading}
                 >
-                  {verifyLoading ? 'Verificando...' : 'Verificar código'}
+                  {isVerifyLoading ? 'Verificando...' : 'Verificar código'}
                 </button>
               </form>
-              {verifyData && (
-                <p className="text-green-500 mt-4 text-center">
-                  {verifyData.message}
+              {isVerifyError && (
+                <p className="text-red-500 mt-4 text-center">
+                  {verifyTokenMutation.error?.message}
                 </p>
-              )}
-              {verifyError && (
-                <p className="text-red-500 mt-4 text-center">{verifyError}</p>
               )}
             </>
           )}
+
           {step === 3 && (
             <>
               <p className="text-gray-600 text-center mb-8">
@@ -182,17 +187,20 @@ const RecoverPasswordForm: React.FC = () => {
                 <button
                   type="submit"
                   className="w-full bg-secondaryPurple text-white py-4 rounded-full hover:bg-customBlue transition duration-300"
+                  disabled={isResetLoading}
                 >
-                  {resetLoading ? 'Actualizando...' : 'Actualizar contraseña'}
+                  {isResetLoading ? 'Actualizando...' : 'Actualizar contraseña'}
                 </button>
               </form>
-              {resetData && (
+              {isResetSuccess && (
                 <p className="text-green-500 mt-4 text-center">
-                  {resetData.message}
+                  {resetPasswordMutation.data?.message}
                 </p>
               )}
-              {resetError && (
-                <p className="text-red-500 mt-4 text-center">{resetError}</p>
+              {isResetError && (
+                <p className="text-red-500 mt-4 text-center">
+                  {resetPasswordMutation.error?.message}
+                </p>
               )}
             </>
           )}
